@@ -30,9 +30,30 @@
 \pagestyle{plain}
 \chapter{Uvod}
 
-Završni ili diplomski rad studenta/studentice je konačni rezultat uloženog napora u završetak studija. Obranom završnog ili diplomskog rada student/studentica stječe prava i obveze koje proizlaze iz završetka akademskog obrazovanja. S ciljem osiguranja potpore studentima pri pisanju završnog/diplomskog rada, izrađen je ovaj predložak oblikovanja samog rada.
+Ovim završnim radom obrađeni su teorijski koncepti na kojima se temelji rad, istražena je literatura vezana za rad, opisan je tijek izrade te opisan je konačni rezultat izrade \textbf{prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača}.
 
-Načelna napomena o strukturi rada jest da se nazivi i struktura poglavlja obavezno definiraju u dogovoru s mentorom/mentoricom. Sadržajna preporuka je da u uvodu treba opisati što je tema završnog/diplomskog rada, zašto je tema značajna te koja je motivacija studenta/ studentice za odabir teme. 
+U nastavku rada za izraz „prilagodljiv sustav za smanjenje svjetlosnog zasljepljivanja vozača koristit će se skraćena inačica „\textbf{sustav protiv zasljepljivanja}“.
+
+\section{Definicija problema}
+
+ Bilo je potrebno napraviti sustav koji u realnom vremenu prepoznaje izvor zasljepljujućeg svjetla te reagira na način da polarizira određeni dio LCD matrice, koja se nalazi na vjetrobranskom staklu vozila, kako bi smanjio jačinu zasljepljujućeg svjetla ispred vozača u vozilu.
+
+ Takvom sustavu je potrebno da ima neke ulazne uređaje pomoću kojih će vidjeti što se događa u okolini vozača. Za ulazne uređaje su uzete dvije web kamere čije će ulazne podatke obrađivati biblioteka OpenCV koja će pružiti softver za računalni vid te na taj način će procesna jedinica znati gdje se nalaze oči vozača i izvor svjetla. Kada procesna jedinica to zna, potrebno je pomoću posebnog algoritma izraćunati koji točno dio LCD matrice treba zatamniti. Razlog zbog čega je uzeta LCD matrica kao komponenta koja će sprječavati zasljepljujuće svjetlo da dođe do očiju vozača je taj što je po svojoj prirodi prozirna i moguće je gledati kroz nju, zbog čega neće smetati na vjetrobranskom staklu prilikom vožnje, a lako ju je moguće napraviti neprozirnom na način da se pikseli postave na crnu boju.
+
+\begin{flushleft}Sustav protiv zasljepljivanja se sastoji od četiri podsustava koja su u radu obrađena:\end{flushleft}
+\begin{itemize}[noitemsep]
+    \item Podsustav za prepoznavanje i pozicioniranje izvora svjetla,
+    \item Podsustav za prepoznavanje i pozicioniranje očiju vozača,
+    \item Reaktivna komponenta (LCD matrica na vjetrobranskom staklu),
+    \item Procesna jedinica.
+\end{itemize}
+
+Uz dodatna ulaganja i razvoj, ovaj fizički koncept može postati vrlo popularan i koristan proizvod svakom vozaču u vozilu jer će pružiti zaštitu u noćnoj vožnji od zasljepljujuće svjetlosti, koja usmjerena u oči vozača za vrlo kratak trenutak može ugroziti vozača. Najčešće su izvor te svjetlosti duga svjetla na vozilu vozača koji zbog neopreznosti ne isključi duga svjetla u trenutku kada dolazi ususret drugom vozilu čiji će vozač zbog toga biti svjetlosno zaslijepljen te na trenutak neće moći vidjeti kuda vozi što može loše utjecati na vozača. Zato je bilo potrebno napraviti sustav koji će:
+\begin{itemize}[noitemsep]
+    \item prepoznati i pozicionirati izvor svjetla te klasificirati različite izvore svjetla,
+    \item prepoznati i pozicionirati oči vozača koristeći kameru,
+    \item kalibrirati podsustave i uspješno ih povezati u jedan cjelovit funkcionalan sustav.
+\end{itemize}
 
 \chapter{Metode i tehnike rada}
 
