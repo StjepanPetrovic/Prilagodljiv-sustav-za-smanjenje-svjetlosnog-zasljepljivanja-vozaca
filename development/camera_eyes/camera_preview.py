@@ -6,13 +6,16 @@ def drawText(frame, txt, location, color=(50, 50, 170)):
 
 
 def open_camera_preview():
-    camera_index = 0
+    # Available camera indexes
+    # The index for the integrated webcam is typically 0
+    # The index for my external webcam is 2, but maybe for you is 1 or something else
+    camera_indexes = [0, 2]
 
-    source = cv2.VideoCapture(camera_index)
+    source = cv2.VideoCapture(camera_indexes[0])
 
     eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 
-    win_name = 'Camera Preview'
+    win_name = 'Eyes Tracking Camera Preview'
     cv2.namedWindow(win_name, cv2.WINDOW_NORMAL)
     cv2.setWindowProperty(win_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
