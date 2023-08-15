@@ -4,9 +4,6 @@ from development.cameras.helping_tools import drawText
 
 
 def open_camera_eyes_preview():
-    # Available camera indexes
-    # The index for the integrated webcam is typically 0
-    # The index for my external webcam is 2, but maybe for you is 1 or something else
     camera_indexes = [0, 2]
 
     source = cv2.VideoCapture(camera_indexes[0])
@@ -24,7 +21,6 @@ def open_camera_eyes_preview():
 
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        # Detect eyes
         eyes = eye_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
         for (x, y, w, h) in eyes:
