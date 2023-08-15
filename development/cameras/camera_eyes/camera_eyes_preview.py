@@ -1,11 +1,9 @@
 import cv2
 
-
-def drawText(frame, txt, location, color=(50, 50, 170)):
-    cv2.putText(frame, txt, location, cv2.FONT_HERSHEY_SIMPLEX, 0.4, color, 1)
+from development.cameras.helping_tools import drawText
 
 
-def open_camera_preview():
+def open_camera_eyes_preview():
     # Available camera indexes
     # The index for the integrated webcam is typically 0
     # The index for my external webcam is 2, but maybe for you is 1 or something else
