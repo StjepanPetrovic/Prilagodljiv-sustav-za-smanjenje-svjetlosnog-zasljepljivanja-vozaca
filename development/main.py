@@ -6,6 +6,9 @@ import numpy as np
 eyes_frames_queue = Queue()
 light_frames_queue = Queue()
 
+eyes_position_queue = Queue()
+light_position_queue = Queue()
+
 
 def read_camera_frames_and_save_in_queues(stop_event):
     camera_indexes = [0, 2]
@@ -44,6 +47,8 @@ def detect_eyes(eyes_frame):
 
     eyes = eye_cascade_model.detectMultiScale(eyes_gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
 
+    eyes_position_queue.put(eyes)
+
     for (x, y, w, h) in eyes:
         cv.rectangle(eyes_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
@@ -65,9 +70,14 @@ def detect_light(light_frame):
     min_contour_area = 4000
     big_contours = [contour for contour in contours if cv.contourArea(contour) > min_contour_area]
 
+    light_positions = []
+
     for contour in big_contours:
+        light_positions.append(cv.boundingRect(contour))
         x, y, w, h = cv.boundingRect(contour)
         cv.rectangle(light_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    light_position_queue.put(light_positions)
 
     drawText(light_frame, 'Press ESC to exit', (20, 20))
 
@@ -78,23 +88,58 @@ def drawText(frame, txt, location, color=(50, 50, 170)):
     cv.putText(frame, txt, location, cv.FONT_HERSHEY_SIMPLEX, 0.4, color, 1)
 
 
-def read_queue_frames_and_show_it(eyes_window, light_window):
+def read_queues_and_show_it(eyes_window, light_window, protection_window):
     while cv.waitKey(1) != 27:
         eye_frame = eyes_frames_queue.get()
         light_frame = light_frames_queue.get()
+
+        if eye_frame is None or light_frame is None:
+            break
+
+        protection_frame = createProtectionFrame()
 
         light_frames_queue.task_done()
         eyes_frames_queue.task_done()
 
         cv.imshow(eyes_window, eye_frame)
         cv.imshow(light_window, light_frame)
-
-        if eye_frame is None:
-            break
+        cv.imshow(protection_window, protection_frame)
 
     stop_read_event.set()
 
     cv.destroyAllWindows()
+
+
+def createProtectionFrame():
+    frame_width = 640
+    frame_height = 480
+
+    protection_frame = np.ones((frame_height, frame_width, 3), dtype=np.uint8) * 255
+
+    eye_positions = eyes_position_queue.get()
+    light_positions = light_position_queue.get()
+
+    for light_position in light_positions:
+        for eye_position in eye_positions:
+            eye_x, eye_y, eye_w, eye_h = eye_position
+            light_x, light_y, light_w, light_h = light_position
+
+            protection_x = (eye_x + light_x) // 2
+
+            protection_y = (eye_y + light_y) // 2
+
+            cv.rectangle(
+                protection_frame,
+                (protection_x, protection_y),
+                (protection_x + light_w, protection_y + light_h),
+                (0, 0, 0),
+                -1
+            )
+
+    eyes_position_queue.task_done()
+    light_position_queue.task_done()
+
+    return protection_frame
 
 
 def open_window(name):
@@ -109,6 +154,9 @@ if __name__ == '__main__':
     win_name_light = 'Light Camera Preview'
     open_window(win_name_light)
 
+    win_name_protection = 'Protection Preview'
+    open_window(win_name_protection)
+
     stop_read_event = threading.Event()
 
     threading.Thread(
@@ -117,4 +165,4 @@ if __name__ == '__main__':
         daemon=True
     ).start()
 
-    read_queue_frames_and_show_it(win_name_eyes, win_name_light)
+    read_queues_and_show_it(win_name_eyes, win_name_light, win_name_protection)
