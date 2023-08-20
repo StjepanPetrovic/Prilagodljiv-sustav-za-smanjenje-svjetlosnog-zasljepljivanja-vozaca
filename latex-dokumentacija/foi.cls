@@ -50,7 +50,7 @@ unicode
 % postavke za programski kod s UTF8 znakovima
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
 
 \lstdefinestyle{colored}{
     lstlistingname={Programski kod}
@@ -69,14 +69,15 @@ unicode
     captionpos=b,
     keepspaces=true,
     numbers=left,
-    numbersep=5pt,
+    numbersep=7pt,
     showspaces=false,
     showstringspaces=false,
     showtabs=false,
     tabsize=2,
+    framexleftmargin=4pt
 }
 
-\lstset{style=mystyle}
+\lstset{style=colored}
 
 \renewcommand{\lstlistingname}{Programski kôd}
 \renewcommand{\lstlistlistingname}{Lista programskih kodova}
