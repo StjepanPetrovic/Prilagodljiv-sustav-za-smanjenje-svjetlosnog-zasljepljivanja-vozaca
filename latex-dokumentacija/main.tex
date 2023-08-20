@@ -190,17 +190,26 @@ ispred same slike umetnite jedan prazan redak (osim ako je slika pozicionirana n
     \item za oblikovanje teksta koji je programski kôd koristite font Courier, veličine 10 pt, jednostruki prored, 6 pt iza odlomka, npr. HTML kôd dijela zaglavlja početne web stranice FOI weba:
 \end{itemize}
 
-\begin{lstlisting}[language=HTML]
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link rel="shortcut icon" href="https://www.foi.unizg.hr/sites/default/files/favicon_0_1.ico" type="image/vnd.microsoft.icon" />
-  <meta name="generator" content="Drupal 7 (http://drupal.org)" />
-  <link rel="canonical" href="https://www.foi.unizg.hr/hr" />
-  <link rel="shortlink" href="https://www.foi.unizg.hr/hr" />
-  <!-- Set the viewport width to device width for mobile -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dobro %*došli*) na FOI | FOI</title>...
-</head>
+\begin{lstlisting}[language=Python, label={lst:lstlisting}, firstnumber=150, style=colored, caption=Python example]
+if __name__ == '__main__':
+    win_name_eyes = 'Eyes Camera Preview'
+    open_window(win_name_eyes)
+
+    win_name_light = 'Light Camera Preview'
+    open_window(win_name_light)
+
+    win_name_protection = 'Protection Preview'
+    open_window(win_name_protection)
+
+    stop_read_event = threading.Event()
+
+    threading.Thread(
+        target=read_camera_frames_and_save_in_queues,
+        args=(stop_read_event,),
+        daemon=True
+    ).start()
+
+    read_queues_and_show_it(win_name_eyes, win_name_light, win_name_protection)
 \end{lstlisting}
 
 \begin{flushleft}\textbf{Formule}\end{flushleft}

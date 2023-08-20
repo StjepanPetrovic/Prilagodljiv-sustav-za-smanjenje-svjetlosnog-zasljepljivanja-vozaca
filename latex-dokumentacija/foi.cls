@@ -48,13 +48,38 @@ unicode
 ]{hyperref} 
 
 % postavke za programski kod s UTF8 znakovima
-\lstset{ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{colored}{
+    lstlistingname={Programski kod}
     escapeinside={\%*}{*)},
     extendedchars=false,
     inputencoding=utf8,
-    basicstyle=\footnotesize\ttfamily,
-    breaklines=true
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{red},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    numberblanklines=false,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
 }
+
+\lstset{style=mystyle}
+
+\renewcommand{\lstlistingname}{Programski kôd}
+\renewcommand{\lstlistlistingname}{Lista programskih kodova}
 
 % Promjena iz Times u Sans font
 \renewcommand{\rmdefault}{\sfdefault}
