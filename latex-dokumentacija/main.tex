@@ -16,9 +16,9 @@
 \smjer{Informacijski i poslovni sustavi} % (ili Poslovni sustavi, Ekonomika poduzetništva, Primjena informacijske tehnologije u poslovanju, Informacijsko i programsko inženjerstvo, Baze podataka i baze znanja, Organizacija poslovnih sustava, Informatika u obrazovanju)
 \titulaProfesora{Doc. dr. sc.}
 
-\sazetak{Tema rada je izrada prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača što predstavlja fizički koncept koji čini LCD matrica, dvije kamere i laptop, a koji u jedan funkcionalan sustav spaja četiri podsustava od kojih svaki ima svoju važnost i način pristupa, a oni zajedno odgovaraju na pitanje: kako preko kamera vidjeti izvor zasljepljujućeg svjetla i oči vozača kaka bi se na LCD matrici zatamnio odgovarajući dio matrice te se na taj način spriječio prolazak zasljepljujućeg svjetla do očiju vozača? Kako bi se izradio odgovarajući sustav korištena je biblioteka OpenCV (engl. Open Source Computer Vision Library) koja je razvijena od strane Intel korporacije, a pruža softver za strojno učenje i računalni vid u realnom vremenu.}
+\sazetak{Tema rada je izrada prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača što predstavlja fizički koncept koji čini LCD matrica, dvije web kamere i laptop kao procesna jedinica. Izazov je bio spojiti četiri podsustava (podsustav za pozicioniranje očiju vozača, podsustav za pozicioniranje zasljepljujućeg svjetla, podsustav za zaštitu od zasljepljujućeg svjetla i podsustav procesne jedinice zajedno sa ostalim hardverom), od kojih svaki ima svoju važnost i način pristupa, u jedan funkcionalan sustav čiji je koncept realiziran u ovome radu i koji odgovara na pitanje: kako preko kamera prepoznati izvor zasljepljujućeg svjetla i zaštiti oči vozača na način da se preko LCD matrice spriječi prolazak zasljepljujućeg svjetla do očiju vozača. Kako bi se izradio odgovarajući sustav korištena je biblioteka OpenCV (\emph{engl. Open Source Computer Vision Library}) koja je kao projekt pokrenuta od strane Intel korporacije, a pruža softver za strojno učenje i računalni vid u realnom vremenu i korišten je programski jezik Python.}
 
-\kljucneRijeci{LCD; OpenCV; vozilo; zasljepljivanje;}
+\kljucneRijeci{računalni vid; OpenCV; vozilo; zasljepljivanje; LCD; Python;}
 
 \begin{document}
 
@@ -29,28 +29,27 @@
 \pagestyle{plain}
 \chapter{Uvod}
 
-Ovim završnim radom obrađeni su teorijski koncepti na kojima se temelji rad, istražena je literatura vezana za rad, opisan je tijek izrade te opisan je konačni rezultat izrade \textbf{prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača}.
+Ovim završnim radom obrađeni su teorijski koncepti na kojima se temelji rad, istražena je literatura, opisan je tijek izrade i konačan rezultat izrade \textbf{prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača} te je provedeno testiranje sustava.
 
 U nastavku rada za izraz „prilagodljiv sustav za smanjenje svjetlosnog zasljepljivanja vozača koristit će se skraćena inačica „\textbf{sustav protiv zasljepljivanja}“.
 
 \section{Definicija problema}
 
- Bilo je potrebno napraviti sustav koji u realnom vremenu prepoznaje izvor zasljepljujućeg svjetla te reagira na način da polarizira određeni dio LCD matrice, koja se nalazi na vjetrobranskom staklu vozila, kako bi smanjio jačinu zasljepljujućeg svjetla ispred vozača u vozilu.
+ Bilo je potrebno napraviti sustav koji u realnom vremenu prepoznaje izvor zasljepljujućeg svjetla te reagira na način da polarizira određeni dio LCD matrice koja se nalazi na vjetrobranskom staklu vozila te na taj način smanji jačinu zasljepljujućeg svjetla ispred vozača u vozilu.
 
- Takvom sustavu je potrebno da ima neke ulazne uređaje pomoću kojih će vidjeti što se događa u okolini vozača. Za ulazne uređaje su uzete dvije web kamere čije će ulazne podatke obrađivati biblioteka OpenCV koja će pružiti softver za računalni vid te na taj način će procesna jedinica znati gdje se nalaze oči vozača i izvor svjetla. Kada procesna jedinica to zna, potrebno je pomoću posebnog algoritma izraćunati koji točno dio LCD matrice treba zatamniti. Razlog zbog čega je uzeta LCD matrica kao komponenta koja će sprječavati zasljepljujuće svjetlo da dođe do očiju vozača je taj što je po svojoj prirodi prozirna i moguće je gledati kroz nju, zbog čega neće smetati na vjetrobranskom staklu prilikom vožnje, a lako ju je moguće napraviti neprozirnom na način da se pikseli postave na crnu boju.
+ Takav sustav treba imati ulazne uređaje pomoću kojih će vidjeti što se događa u okolini vozača. Za ulazne uređaje su uzete dvije web kamere čije će ulazne podatke obrađivati istrenirani modeli za računalni vid iz biblioteke OpenCV te će tako procesna jedinica znati gdje se nalaze oči vozača i izvor svjetla. Kada procesna jedinica to zna, potrebno je pomoću algoritma izračunati koji točno dio LCD matrice treba polarizirati/zatamniti. Razlog zbog čega je uzeta LCD matrica kao komponenta koja će sprječavati zasljepljujuće svjetlo da dođe do očiju vozača je taj što može biti prozirna i moguće je gledati kroz nju, zbog čega neće smetati na vjetrobranskom staklu prilikom vožnje, a lako ju je moguće napraviti neprozirnom na način da se zaslon polarizira odnosno da se pikseli postave na crnu boju.
 
 \begin{flushleft}Sustav protiv zasljepljivanja se sastoji od četiri podsustava koja su u radu obrađena:\end{flushleft}
 \begin{itemize}[noitemsep]
     \item Podsustav za prepoznavanje i pozicioniranje izvora svjetla,
     \item Podsustav za prepoznavanje i pozicioniranje očiju vozača,
-    \item Reaktivna komponenta (LCD matrica na vjetrobranskom staklu),
-    \item Procesna jedinica.
+    \item Podsustav za polarizaciju LCD matrice kao reaktivne komponente,
+    \item Procesna jedinica (laptop) i ostali hardver (web kamere i LCD matrica).
 \end{itemize}
 
 Uz dodatna ulaganja i razvoj, ovaj fizički koncept može postati vrlo popularan i koristan proizvod svakom vozaču u vozilu jer će pružiti zaštitu u noćnoj vožnji od zasljepljujuće svjetlosti, koja usmjerena u oči vozača za vrlo kratak trenutak može ugroziti vozača. Najčešće su izvor te svjetlosti duga svjetla na vozilu vozača koji zbog neopreznosti ne isključi duga svjetla u trenutku kada dolazi ususret drugom vozilu čiji će vozač zbog toga biti svjetlosno zaslijepljen te na trenutak neće moći vidjeti kuda vozi što može loše utjecati na vozača. Zato je bilo potrebno napraviti sustav koji će:
 \begin{itemize}[noitemsep]
-    \item prepoznati i pozicionirati izvor svjetla te klasificirati različite izvore svjetla,
-    \item prepoznati i pozicionirati oči vozača koristeći kameru,
+    \item prepoznati i pozicionirati izvor svjetla te oči vozača koristeći kamere,
     \item kalibrirati podsustave i uspješno ih povezati u jedan cjelovit funkcionalan sustav.
 \end{itemize}
 
