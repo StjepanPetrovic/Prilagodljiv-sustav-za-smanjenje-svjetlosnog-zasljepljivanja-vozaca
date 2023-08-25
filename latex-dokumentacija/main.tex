@@ -1,5 +1,6 @@
 \documentclass{foi}
-\usepackage{lipsum}
+
+\usepackage[document]{ragged2e}
 
 \vrstaRada{\zavrsni} % \diplomski
 \title{Prilagodljiv sustav za smanjenje svjetlosnog zasljepljivanja vozača}
@@ -21,6 +22,12 @@
 \kljucneRijeci{računalni vid; OpenCV; vozilo; zasljepljivanje; LCD; Python;}
 
 \begin{document}
+
+\justifying
+
+\counterwithout{lstlisting}{chapter}
+
+\captionsetup[lstlisting]{font={small, sf},labelfont={sf, small}}
 
 \maketitle
 
@@ -79,6 +86,132 @@ U ovom poglavlju treba opisati koje će metode i tehnike biti korištene pri raz
 \chapter{Pregled literature}
 
 \chapter{Izrada sustava}
+
+U ovom poglavlju će biti opisana izrada prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača. Ovo će poglavlje biti podijeljeno na četiri podpoglavlja od kojih će svaki opisivati određenu komponentu budući da se sustav sastoji od četiri komponente:
+\begin{itemize}[noitemsep]
+    \item procesna jedinica (laptop) i hardver (web kamere i LCD matrica),
+    \item komponenta za prepoznavanje i pozicioniranje izvora svjetla,
+    \item komponenta za prepoznavanje i pozicioniranje očiju vozača,
+    \item komponenta za polarizaciju LCD matrice kao reaktivne komponente.
+\end{itemize}
+
+Programski kod koji se bude prikazivao u radu može se pronaći na GitHub repozitoriju preko poveznice: \href{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}. Svi isječci programskog koda su uzeti iz jedne datoteke \href{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca/blob/main/development/main.py}{$main.py$} te će se u isječcima programskog koda moći vidjeti i redni brojevi linija koda koji se odnose na redne brojeve linija koda iz datoteke \href{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca/blob/main/development/main.py}{$main.py$}.
+
+Ovim radom izrađen je koncept koji će objasniti i prikazati ideju za izradu ovakvog sustava, ali ovaj koncept nije spreman za upotrebu u stvarnoj okolini. Ono što nije ovim radom obrađeno je navedeno u nastavku, to su neke od glavnih značajki koje bi sustav trebao ispunjavati kako bi pronašao svrhu u stvarnoj okolini:
+\begin{itemize}[noitemsep]
+    \item korištenje mikroprocesora koji će biti zadužen samo za obavljanje funkcionalnosti sustava,
+    \item korištenje posebno izrađene prozirne LCD matrice ili korištenje drugog medija kao reaktivne komponente koja bi poslužila svrsi,
+    \item korištenje posebno istreniranog modela ili senzora koji će moći izračunati udaljenost zasljepljujućeg svjetla i očiju od reaktivne komponente,
+    \item korištenje algoritma koji će uzeti u obzir sve udaljenosti, nagib vjetrobranskog stakla i klasifikacije objekata od interesa kako bi što kvalitetnije izračunavao mjesto na kojemu treba zaustaviti svjetlost preko reaktivne komponente,
+    \item spremnost na rad u noćnim uvjetima,
+    \item velika količina testiranja sustava u raznovrsnoj i dinamičnoj okolini (posebno noćnoj okolini).
+\end{itemize}
+
+\pagebreak
+\section{Komponenta procesne jedinice i hardver}
+
+Ovo poglavlje opisuje komponentu procesne jedinice kao komponentu koja čini temelj i softverski povezuje ostale komponente, a također opisuje i kako je sustav hardverski povezan.
+
+\subsection{Hardver}
+U ovom radu komponentu procesne jedinice predstavlja laptop na kojem će se izvršavati programski kod i čiji će procesor obrađivati ulazne informacije koje šalju kamere, a kamere su obične web kamere od kojih je jedna ugrađena u laptop, a druga je eksterna i priključena je preko USB priključka u laptop. Jedna kamera je namjenjena za snimanje okoline ispred vozača, a druga kamera je namijenjena za snimanje samog vozača.
+
+Ispred vozača bi se nalazila LCD matrica koja će smanjiti i sprječiti zasljepljujuću svjetlost da dođe do očiju vozača. LCD matrica, zajedno sa elektronikom, za ovaj rad je izvađena iz običnog monitora te povezana preko HDMI priključka u laptop i ponaša se kao drugi zaslon laptopa. Na slici \ref{fig:lcd_matrica_1} i \ref{fig:lcd_matrica_2} može se vidjeti kako izgleda LCD matrica zajedno sa elektronikom i priključcima kada je izvađena iz monitora. Kao što se može vidjeti, LCD matrica kada se izvadi iz monitora je tamna te je potrebno imati jak izvor svjetla kako bi se vidjelo kroz nju dok je samostalno izvan monitora. TODO - iz toga razloga planiram postaviti LED svjetla iznad i ispod LCD matrice kako bih poboljšao njezinu providnost.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{slike/lcd_matrica_1}
+    \captionsetup{font={small}}
+    \caption{Prikaz LCD matrica s prednje strane kada je izvađena iz monitora [autorski rad]}
+    \label{fig:lcd_matrica_1}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{slike/lcd_matrica_2}
+    \captionsetup{font={small}}
+    \caption{Prikaz LCD matrica sa zadnje strane kada je izvađena iz monitora [autorski rad]}
+    \label{fig:lcd_matrica_2}
+\end{figure}
+
+TODO pronaći još jednu lcd matricu i pokušati s njom jer sam ovu pokvario :)
+
+\subsection{OpenCV-Python biblioteka}
+
+Budući da je potrebno prepoznati i pronaći točne pozicije na kojima se nalaze objekti od interesa odnosno svjetlost i oči, potrebno je koristiti algoritme za računalni vid. Kako IBM navodi (engl. \emph{International Business Machines Corporation - IBM}) \cite{cv-ibm}, računalni vid je grana umjetne inteligencija (engl. \emph{Artificial intelligence - AI}) koja omogućava računalima da pruže smislene informacije koje pronađu obradom slika, videa ili drugog vizualnog izvora te da reagiraju shodno toj informaciji. Zbog toga u ovom radu koristit će se biblioteka OpenCV za programski jezik Python.
+
+OpenCV je biblioteka otvorenog koda (engl. \emph{open source}) koja služi za rješavanja problema vezanih za računalni vid (engl. \emph{computer vision}) i strojno učenje (engl. \emph{machine learning}) te pruža često potrebnu infrastrukturu za aplikacije koje integriraju računalni vid \cite{opencv}. OpenCV biblioteka podržava programske jezike C++, Python, Java, itd., i dostupna je na Windows, Linux, OS X, Andorid, iOS platformama. U radu će se koristiti OpenCV-Python biblioteka koja je Python API (engl. \emph{Application Programming Interface - API}) za OpenCV biblioteku koja uzima najbolje kvalitete OpenCV C++ API-ja i Python programskog jezika \cite{opencv-python}.
+
+Programski jezik Python je izabran zbog osobnih preferencija autora. Treba se uzeti u obzir da je Python sporiji programski jezik u odnosu na C++ koji je se također mogao koristiti u ovom radu, no moguće je imati i Python module koji će sadržavati C++ programski kod za procesorski intenzivne zadatke, a rezultat toga je da se izvršavanja Python programskog koda izvršava približno jednakom brzinom kao i brzina izvršavanja C++ programskog koda jer se C++ kod izvršava u pozadini te lakše je programirati u Python programskom jeziku nego u C++ programskom jeziku \cite{opencv-python}.
+
+\flushleft Kako bi koristili biblioteku OpenCV sa programskim jezikom Python potrebno ju je prvo instalirati prema uputama za odgovarajući operativni sustav (OS) za:
+\begin{itemize}[noitemsep]
+    \item Linux OS: \url{https://youtu.be/gt0Mpi6FFzQ?si=QCLjiDrJcBCP5qV8},
+    \item Windows OS: \url{https://youtu.be/RfFiTozvOdQ?si=6jtyHU4YK9jsi6kv},
+    \item MacOS: \url{https://youtu.be/hZWgEPOVnuM?si=kD9CNUf4kNqyWBBK},
+\end{itemize}
+te je potrebno postaviti "conda" radno okruženje: \url{https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html}.
+
+Nakon instalacije moguće je uključiti biblioteku pomoću sljedećeg programskog koda \ref{lst:lstlisting_1}:
+\begin{lstlisting}[language=Python, label={lst:lstlisting_1}, firstnumber=1, style=colored, caption=Uključivanje biblioteke OpenCV za korištenje]
+import cv2 as cv
+\end{lstlisting}
+
+\justifying
+
+\subsection{Redovi kao struktura podataka za spremanje okvirova}
+
+Ono što algoritam za računalni vid uzima kao ulazni podatak je fotografija odnosno okvir (engl. \emph{frame}) koji se dobiva od kamere koja cijelo vrijeme snima okolinu. Slika \ref{fig:slika_frame} objašnjava kako je skup okvirova odnosno fotografija fotografiranih uzastopno u kratkom vremenskom periodu jednak videu te na taj način video i nastaje \cite{AnimoticaBlog2020}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{slike/frames-per-second-diagram}
+    \captionsetup{font={small}}
+    \caption{Prikaz uzastopnih fotografija/okvirova koji čine video od jedne sekunde \cite{AnimoticaBlog2020}}
+    \label{fig:slika_frame}
+\end{figure}
+
+Budući da kamere cijelo vrijeme snimaju okolinu, one generiraju mnogo fotografiju u stvarnom vremenu od kojih će program uzimati po jednu fotografiju u određenom trenutku, analizirati ih i spremati ih u posebne strukture podataka za daljnju obradu. U ovom radu strukture podataka koje su uzete za ovu svrhu spremanja potrebnih informacija su redovi (engl. \emph{Queues}) tipa FIFO - "prvi ušao, prvi izašao" (engl. \emph{First In First Out - FIFO}).
+
+Razlog zbog čega su odabrani redovi kao struktura podataka u koju će se spremati podaci je taj što redovi osiguravaju sigurno korištenje podataka između više dretava, a tip FIFO zbog toga što je bitno da se prvo analizira okvir koji je najprije došao \cite{PythonSoftwareFoundation}. To će biti vrlo korisno budući da će ovaj program koristiti glavnu dretvu za čitanje okvirova iz redova i njihovo prikazivanje, i drugu dretvu za dobijanje okvirova pomoću kamere, analiziranje i njihovo spremanje u redove. Slika \ref{fig:dijagram_red} slikovito prikaziva red kao strukturu podataka te prikaziva funkcije $get()$ i $put()$ klase $Queue$ pomoću kojih se podaci dodavaju i uzimaju iz redova. Programski kod \ref{lst:lstlisting_2} prikazuje kako uključiti biblioteku i inicijalizirati redove.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{slike/redovi_dijagram}
+    \captionsetup{font={small}}
+    \caption{Slikovit prikaz reda kao strukture podataka [autorski rad]}
+    \label{fig:dijagram_red}
+\end{figure}
+
+\begin{lstlisting}[language=Python, label={lst:lstlisting_2}, firstnumber=4, style=colored, caption=Uključivanje biblioteke $queue$ i inicijaliziranje redova]
+from queue import Queue
+
+eyes_frames_queue = Queue()
+light_frames_queue = Queue()
+
+eyes_position_queue = Queue()
+light_position_queue = Queue()
+\end{lstlisting}
+
+Programskim kodom \ref{lst:lstlisting_2} inicijalizirani su  $eyes\_frames\_queue$ i $light\_frames\_queue$ redovi koji služe za spremanje okvirova koji se dobiju pomoću kamera i prikazivanje istih okvirova nakon njihova analiziranja te još su inicijalizirani $eyes\_position\_queue$ i $light\_position\_queue$ redovi koji služe za spremanje koordinata za pozicije očiju i izvora svjetla koji se dobiju nakon analiziranja okvirova i služe za kasnije računanje prilikom stvaranje sloja zaštite koji će se prikazivati na LCD matrici.
+
+Okvirovi se prikazuju u posebno otvorenim prozorima na zaslonu laptopa i LCD matrice koje otvaramo sa programskim kodom \ref{lst:lstlisting_3}. Prvi prozor prikaziva okvirove od kamere koja snima oči vozača, drugi prozor prikaziva okvirove od kamere koja snima vanjsku okolinu koja dolazi ususret vozaču, a treći prozor je prozor koji će biti postavljen na LCD matricu i prikazivat će zaštitni okvir koji je ustvari okvir popunjen bijelom bojom, a crnom bojom na mjestima koja su izračunata kako bi se zatamnio određen dio matrice i spriječilo prodiranje svjetlosti. Kontinuirano prikazivanje okvirova rezultira time da se može u realnom vremenu pratiti ono što kamere gledaju u obliku videa uživo (engl. \emph{live stream}).
+
+\begin{lstlisting}[language=Python, label={lst:lstlisting_3}, firstnumber=151, style=colored, caption=Otvaranje prozora na zaslonu]
+win_name_eyes = 'Eyes Camera Preview'
+open_window(win_name_eyes)
+
+win_name_light = 'Light Camera Preview'
+open_window(win_name_light)
+
+win_name_protection = 'Protection Preview'
+open_window(win_name_protection)
+\end{lstlisting}
+
+\section{Komponenta za prepoznavanje i pozicioniranje izvora svjetla}
+
+\section{Komponenta za prepoznavanje i pozicioniranje očiju vozača}
+
+\section{Komponenta za polarizaciju LCD matrice kao reaktivne komponente}
 
 \chapter{Testiranje sustava}
 

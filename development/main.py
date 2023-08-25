@@ -1,7 +1,7 @@
 import cv2 as cv
 import threading
-from queue import Queue
 import numpy as np
+from queue import Queue
 
 eyes_frames_queue = Queue()
 light_frames_queue = Queue()

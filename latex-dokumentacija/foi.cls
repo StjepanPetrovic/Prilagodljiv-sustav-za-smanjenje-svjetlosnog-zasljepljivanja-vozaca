@@ -27,7 +27,7 @@
 \RequirePackage{times}
 \RequirePackage{courier} % za programski kod
 \RequirePackage[backend=biber, style=ieee]{biblatex} % IEEE stil citiranja
-\addbibresource{lib.bib}
+\addbibresource{bib_zavrsni_rad.bib}
 
 \RequirePackage{comment}
 \RequirePackage{indentfirst}
@@ -50,17 +50,16 @@ unicode
 % postavke za programski kod s UTF8 znakovima
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
-\definecolor{backcolour}{rgb}{0.97,0.97,0.97}
+\definecolor{backcolour}{rgb}{0.96,0.96,0.96}
 
 \lstdefinestyle{colored}{
-    lstlistingname={Programski kod}
     escapeinside={\%*}{*)},
     extendedchars=false,
     inputencoding=utf8,
     backgroundcolor=\color{backcolour},
     commentstyle=\color{codegreen},
     keywordstyle=\color{blue}\bfseries,
-    numberstyle=\tiny\color{codegray},
+    numberstyle=\tiny\color{black},
     stringstyle=\color{red},
     basicstyle=\ttfamily\footnotesize,
     breakatwhitespace=false,
@@ -74,12 +73,14 @@ unicode
     showstringspaces=false,
     showtabs=false,
     tabsize=2,
-    framexleftmargin=4pt
+    framexleftmargin=4pt,
+    aboveskip=15pt,
+    belowskip=10pt,
 }
 
 \lstset{style=colored}
 
-\renewcommand{\lstlistingname}{Programski kôd}
+\renewcommand{\lstlistingname}{Programski kod}
 \renewcommand{\lstlistlistingname}{Lista programskih kodova}
 
 % Promjena iz Times u Sans font
