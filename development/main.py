@@ -17,28 +17,18 @@ def read_analyze_and_save_frames(stop_event):
     light_source = cv.VideoCapture(camera_indexes[1])
 
     while not stop_event.is_set():
-        has_eye_frame, eye_frame = eyes_source.read()
+        has_eye_frame, eyes_frame = eyes_source.read()
         has_light_frame, light_frame = light_source.read()
 
         if not has_eye_frame or not has_light_frame:
             print("Frame not found. Check cameras.\n")
             break
 
-        eye_frame, light_frame = analyze_frames(eye_frame, light_frame)
-
-        eyes_frames_queue.put(eye_frame)
-        light_frames_queue.put(light_frame)
+        detect_eyes(eyes_frame)
+        detect_light(light_frame)
 
     eyes_source.release()
     light_source.release()
-
-
-def analyze_frames(eyes_frame, light_frame):
-    eyes_frame = detect_eyes(eyes_frame)
-    light_frame = detect_light(light_frame)
-
-    return eyes_frame, light_frame
-
 
 def detect_eyes(eyes_frame):
     eyes_gray_frame = cv.cvtColor(eyes_frame, cv.COLOR_BGR2GRAY)
@@ -54,7 +44,7 @@ def detect_eyes(eyes_frame):
 
     drawText(eyes_frame, 'Press ESC to exit', (20, 20))
 
-    return eyes_frame
+    eyes_frames_queue.put(eyes_frame)
 
 
 def detect_light(light_frame):
@@ -81,7 +71,8 @@ def detect_light(light_frame):
 
     drawText(light_frame, 'Press ESC to exit', (20, 20))
 
-    return light_frame
+    print(light_frame)
+    light_frames_queue.put(light_frame)
 
 
 def drawText(frame, txt, location, color=(50, 50, 170)):
