@@ -101,6 +101,7 @@ Ovim radom izrađen je koncept koji će objasniti i prikazati ideju za izradu ov
 \begin{itemize}[noitemsep]
     \item korištenje mikroprocesora koji će biti zadužen samo za obavljanje funkcionalnosti sustava,
     \item korištenje posebno izrađene prozirne LCD matrice ili korištenje drugog medija kao reaktivne komponente koja bi poslužila svrsi,
+    \item korištenje posebnog modela i senzora za otkrivanje jačine svjetlosti,
     \item korištenje posebno istreniranog modela ili senzora koji će moći izračunati udaljenost zasljepljujućeg svjetla i očiju od reaktivne komponente,
     \item korištenje algoritma koji će uzeti u obzir sve udaljenosti, nagib vjetrobranskog stakla i klasifikacije objekata od interesa kako bi što kvalitetnije izračunavao mjesto na kojemu treba zaustaviti svjetlost preko reaktivne komponente,
     \item spremnost na rad u noćnim uvjetima,
@@ -212,7 +213,7 @@ open_window(win_name_protection)
 \flushleft Zadatci koje program treba odrađivati su:
 \begin{enumerate}[noitemsep]
     \item dohvačanje/čitanje okvira iz video izvora - ulaznog uređaja (kamere),
-    \item analiziranje okvira (detektiranje svjetlosti i očiju),
+    \item analiziranje okvira (otkrivanje svjetlosti i očiju),
     \item spremanje pozicija i okvira u redove,
     \item čitanje okvira iz redova,
     \item izračunavanje pozicije koju treba zatamniti na LCD matrici,
@@ -241,7 +242,7 @@ read_calculate_and_show_frames(win_name_eyes, win_name_light, win_name_protectio
 
 \subsection{Kamere - čitanje okvira s video izvora}
 
-Kako bi se u realnom vremenu moglo detektirati zasljepljujeće svjetlo i oči u cilju smanjivanja zasljepljujećg svjetla potrebno je cijelo vrijeme neprekidno pratiti sadržaj onoga što kamere vide odnosno čitati okvire sa video izvora. Podsjetnik - jedan pročitan okvir je ustvari jedna fotografija iz videa. Porgramski kod \ref{lst:lstlisting_5} prikazuje definiciju $read\_analyze\_and\_save\_frames()$ funkcije koja se izvršava na posebnoj novoj dretvi, a iz definicije funkcije može se vidjeti kako isprogramirati čitanje okvira sa video izvora.
+Kako bi se u realnom vremenu moglo otkriti zasljepljujeće svjetlo i oči u cilju smanjivanja zasljepljujećg svjetla potrebno je cijelo vrijeme neprekidno pratiti sadržaj onoga što kamere vide odnosno čitati okvire sa video izvora. Podsjetnik - jedan pročitan okvir je ustvari jedna fotografija iz videa. Porgramski kod \ref{lst:lstlisting_5} prikazuje definiciju $read\_analyze\_and\_save\_frames()$ funkcije koja se izvršava na posebnoj novoj dretvi, a iz definicije funkcije može se vidjeti kako isprogramirati čitanje okvira sa video izvora.
 
 \begin{lstlisting}[language=Python, label={lst:lstlisting_5}, firstnumber=13, style=colored, caption={Definicija funkcije $read\_analyze\_and\_save\_frames()$}]
 def read_analyze_and_save_frames(stop_event):
@@ -287,13 +288,70 @@ Slika \ref{fig:sustav1} prikaziva kako okviri izgledaju prije otkrivanja zasljep
     \centering
     \includegraphics[width=1\textwidth]{slike/sustav1}
     \captionsetup{font={small}}
-    \caption{Prikaz okvira prije detektiranja zasljepljujućeg svjetla i očiju [autorski rad]}
+    \caption{Prikaz okvira prije otkrivanja zasljepljujućeg svjetla i očiju [autorski rad]}
     \label{fig:sustav1}
 \end{figure}
 
 \section{Komponenta za prepoznavanje i pozicioniranje izvora svjetla}
 
+Nakon što se uspješno čitaju okviri s kamere koja gleda okolinu koja je ispred vozača, potrebno je analizirati svaki okvir i otkriti nalazi li se na njima zasljepljujuća svjetlost. Ako se svjetlost nalazi na okviru, potrebno je pronaći točne koordinate svjetlosti na okviru. Ovo poglavlje će kroz programski kod \ref{lst:lstlisting_6} koji prikaziva definiranje funkcije $detect\_light()$ za otkrivanje zasljepljujuće svjetlosti opisati navedeni potrebni zadatak.
+
+\begin{lstlisting}[language=Python, label={lst:lstlisting_6}, firstnumber=50, style=colored, caption={Definicija funkcije $detect\_light()$}]
+def detect_light(light_frame):
+    lower_range = np.array([0, 0, 255])
+    upper_range = np.array([240, 11, 255])
+
+    light_hsv_frame = cv.cvtColor(light_frame, cv.COLOR_BGR2HSV)
+
+    color_mask = cv.inRange(light_hsv_frame, lower_range, upper_range)
+
+    contours, _ = cv.findContours(color_mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+
+    min_contour_area = 4000
+    big_contours = [contour for contour in contours if cv.contourArea(contour) > min_contour_area]
+
+    light_positions = []
+
+    for contour in big_contours:
+        light_positions.append(cv.boundingRect(contour))
+
+        x, y, w, h = cv.boundingRect(contour)
+        cv.rectangle(light_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    light_position_queue.put(light_positions)
+
+    drawText(light_frame, 'Press ESC to exit', (20, 20))
+
+    light_frames_queue.put(light_frame)
+\end{lstlisting}
+
+Idealno bi bilo kada bi ovakvo rješenje mogli kombinirati i sa senzorom koji može izmjeriti intenzitet svjetlosti jer bi se mogla otkriti i zasljepljujuća svjetlost drugih boja osim raspona bijele boje koji je jedini definiran u ovom rješenju za otkrivanje zasljepljujuće svjetlosti te također bi se svjetlost mogla lakše klasificirati. U programskom kodu \ref{lst:lstlisting_6} definiran je raspon bijele boje koji će se otkrivati na okviru (51. i 52. linija koda). Bijela boja je izabrana zato što je svjetlost najčešće bijele do žute boje.
+
+Kao argument ova funkcija prima okvir koji treba analizirati. Potrebno je tom okviru promijeniti prostor boja (engl. \emph{color space}) iz BGR prostora boja (engl. Blur-Green-Red - BGR; OpenCV koristi BGR prostor boja umjesto RGB prostora boja zbog toga što je prilikom početnih godina OpenCV-a BGR prostor boja bio dosta popularniji kod proizvođača kamera i pružatelja softvera, a tako je i ostalo do danas \cite{Satya}) u HSV prostor boja (54. linija koda) zbog toga što funkcija $inRange()$ biblioteke OpenCV koristi HSV prostor boja te ona će kao argumente primiti originalni okvir i raspon boja. Funkcijom $inRange()$ dobit ćemo masku okvira popunjenu crno-bijelom bojom gdje bijela boja predstavlja objekt od interesa koji se svojom bojom nalazi u definiranom rasponu boje \cite{OpenCV3} (56. linija koda). Na slici \ref{fig:maska} možete vidjeti kako je funkcija $inRange()$ stvorila masku okvira sa crnom i bijelom bojom gdje bijela boja predstavlja zasljepljujuću svjetlost:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{slike/cb_maska_okvir}
+    \captionsetup{font={small}}
+    \caption{Prikaz crno-bijele maske okvira [autorski rad]}
+    \label{fig:maska}
+\end{figure}
+
+Sada se može reći da je zasljepljujuća svjetlost detektirana, ali se ne zna njezina točna pozicija s koordinatama što će poslužiti kod obavljanja računanja zaštitnog okvira za LCD matricu. Stoga svo ovo provedeno pretvaranje okvira je učinjeno zbog toga što će maska okvira biti proslijeđena funkciji $findContours()$ biblioteke OpenCV koja još prima argumente $cv.RETR\_EXTERNAL$ i $cv.CHAIN\_APPROX\_SIMPLE$ koji definiraju kakve će se konture praviti (58. linija koda). U ovom rješenju kontura predstavlja pravokutnik koji obuhvaća objekt od interesa i za taj pravokutnik dobijemo koordinate gornje lijeve točke, visinu i širinu. Funkcija $findContours()$ nije obavezno tražila svo provedeno pretvaranje okvira ali zbog boljeg pronalska kontura preporučeno je da funkcija primi binarni okvir - crno-bijelu masku kako bi rubovi bili što izraženiji \cite{OpenCV4}. Kako bi samo imali konture najizraženijih i najvećih svjetlosti odrađeno je i filtriranje (60. i 61. linija koda).
+
+Sada je potrebno proći kroz svaku pronađenu konturu kako bi ju dodali u $light\_position\_queue$ red i kako bi na originalnom okviru iscrtali zeleni pravokutnik oko zasljepljujuće svjetlosti i spremili originalni okvir u $light\_framesq\_queue$ red (63. do 75. linija koda). Potrebno je naglasiti da pralaleno radi i glavna dretva koja odmah uzima okvire stavljene u red i prikaziva ih u prozorima na zaslonu, a o tome će biti više rijeći u poglavlju "Komponenta za polarizaciju LCD matrice kao reaktivne komponente". Iscrtavanje zelenog pravokutnika na originalnom okviru (slika \ref{fig:sustav2}) napravljeno je samo zbog toga kako bi se uvjerili da detektiranje zasljepljujuće svjetlosti radi:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{slike/sustav2}
+    \captionsetup{font={small}}
+    \caption{Prikaz detektirane svjetlosti [autorski rad]}
+    \label{fig:sustav2}
+\end{figure}
+
 \section{Komponenta za prepoznavanje i pozicioniranje očiju vozača}
+
+Nakon što se uspješno čitaju okviri s kamere koja gleda u vozača, potrebno je analizirati svaki okvir i otkriti nalaze li se na njima oči. Ako se oči nalaze na okviru, potrebno je pronaći točne koordinate očiju na okviru.
 
 \section{Komponenta za polarizaciju LCD matrice kao reaktivne komponente}
 

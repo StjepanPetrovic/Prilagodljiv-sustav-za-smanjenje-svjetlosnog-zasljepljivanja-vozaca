@@ -27,8 +27,8 @@ def read_analyze_and_save_frames(stop_event):
         detect_eyes(eyes_frame)
         detect_light(light_frame)
 
-    eyes_source.release()
     light_source.release()
+    eyes_source.release()
 
 def detect_eyes(eyes_frame):
     eyes_gray_frame = cv.cvtColor(eyes_frame, cv.COLOR_BGR2GRAY)
@@ -64,6 +64,7 @@ def detect_light(light_frame):
 
     for contour in big_contours:
         light_positions.append(cv.boundingRect(contour))
+
         x, y, w, h = cv.boundingRect(contour)
         cv.rectangle(light_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
