@@ -17,7 +17,7 @@
 \smjer{Informacijski i poslovni sustavi} % (ili Poslovni sustavi, Ekonomika poduzetništva, Primjena informacijske tehnologije u poslovanju, Informacijsko i programsko inženjerstvo, Baze podataka i baze znanja, Organizacija poslovnih sustava, Informatika u obrazovanju)
 \titulaProfesora{Doc. dr. sc.}
 
-\sazetak{Tema rada je izrada prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača što predstavlja fizički koncept koji čini LCD matrica, dvije web kamere i laptop kao procesna jedinica. Izazov je bio spojiti četiri komponente (komponenta za pozicioniranje očiju vozača, komponenta za pozicioniranje zasljepljujućeg svjetla, komponenta za zaštitu od zasljepljujućeg svjetla i komponenta procesne jedinice zajedno sa ostalim hardverom), od kojih svaka ima svoju važnost i način pristupa, u jedan funkcionalan sustav čiji je koncept realiziran u ovome radu i koji odgovara na pitanje: kako preko kamera prepoznati izvor zasljepljujućeg svjetla i zaštiti oči vozača na način da se preko LCD matrice spriječi prolazak zasljepljujućeg svjetla do očiju vozača. Kako bi se izradio odgovarajući sustav korištena je biblioteka OpenCV (engl. \emph{Open Source Computer Vision Library}) koja je kao projekt pokrenuta od strane Intel korporacije, a pruža softver za strojno učenje i računalni vid u realnom vremenu i korišten je programski jezik Python. Programski kod i \LaTeX \space dokumentacija je verzionizirana na GitHub repozitoriju, kojem se može pristupiti preko poveznice: \url{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}}
+\sazetak{Tema rada je izrada prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača što predstavlja fizički koncept koji čini LCD matrica, dvije web kamere i laptop kao procesna jedinica. Izazov je bio spojiti četiri komponente (komponenta za pozicioniranje očiju vozača, komponenta za pozicioniranje zasljepljujućeg svjetla, komponenta za zaštitu od zasljepljujućeg svjetla i komponenta procesne jedinice zajedno sa ostalim hardverom), od kojih svaka ima svoju važnost i način pristupa, u jedan funkcionalan sustav čiji je koncept realiziran u ovome radu i koji odgovara na pitanje: kako preko kamera prepoznati izvor zasljepljujućeg svjetla i zaštiti oči vozača na način da se preko LCD matrice spriječi prolazak zasljepljujućeg svjetla do očiju vozača. Kako bi se izradio odgovarajući sustav korištena je biblioteka OpenCV (engl. \emph{Open Source Computer Vision Library}) koja je kao projekt pokrenuta od strane Intel korporacije, a pruža softver za strojno učenje i računalni vid u realnom vremenu i korišten je programski jezik Python. Programski kod i \LaTeX \space dokumentacija je verzionizirana na GitHub repozitoriju, kojem se može pristupiti preko poveznice: \url{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}.}
 
 \kljucneRijeci{računalni vid; OpenCV; vozilo; zasljepljivanje; LCD; Python;}
 
@@ -37,8 +37,6 @@
 \chapter{Uvod}
 
 Ovim završnim radom obrađeni su teorijski koncepti na kojima se temelji rad, istražena je literatura, opisan je tijek izrade i konačan rezultat izrade \textbf{prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača} te je provedeno testiranje sustava.
-
-Programski kod i \LaTeX \space dokumentacija je verzionizirana na GitHub repozitoriju, kojem se može pristupiti preko poveznice: \href{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}.
 
 U nastavku rada za izraz „prilagodljiv sustav za smanjenje svjetlosnog zasljepljivanja vozača koristit će se skraćena inačica „\textbf{sustav protiv zasljepljivanja}“.
 
@@ -82,6 +80,8 @@ Velik je broj nesreća prouzrokovan svjetlosnim zasljepljenjem vozača, a još v
 \section{Metode i tehnike rada}
 
 U ovom poglavlju treba opisati koje će metode i tehnike biti korištene pri razradi teme, kako su provedene istraživačke aktivnosti, koji su programski alati ili aplikacije korišteni.
+
+Programski kod i \LaTeX \space dokumentacija je verzionizirana na GitHub repozitoriju, kojem se može pristupiti preko poveznice: \href{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}.
 
 \chapter{Pregled literature}
 
@@ -198,6 +198,12 @@ Programskim kodom \ref{lst:lstlisting_2} inicijalizirani su  $eyes\_frames\_queu
 Okviri se prikazuju u posebno otvorenim prozorima na zaslonu laptopa i LCD matrice koje otvaramo sa programskim kodom \ref{lst:lstlisting_3}. Prvi prozor prikaziva okvire od kamere koja snima oči vozača, drugi prozor prikaziva okvire od kamere koja snima vanjsku okolinu koja dolazi ususret vozaču, a treći prozor je prozor koji će biti postavljen na LCD matricu i prikazivat će zaštitni okvir koji je ustvari okvir popunjen bijelom bojom, a crnom bojom na mjestima koja su izračunata kako bi se zatamnio određen dio matrice i spriječilo prodiranje svjetlosti. Kontinuirano prikazivanje okvira rezultira time da se može u realnom vremenu pratiti ono što kamere gledaju u obliku videa uživo (engl. \emph{live stream}).
 
 \begin{lstlisting}[language=Python, label={lst:lstlisting_3}, firstnumber=142, style=colored, caption=Otvaranje prozora na zaslonu]
+def open_window(name):
+    cv.namedWindow(name, cv.WINDOW_NORMAL)
+    cv.setWindowProperty(name, cv.WND_PROP_AUTOSIZE, cv.WINDOW_NORMAL)
+
+
+if __name__ == '__main__':
 win_name_eyes = 'Eyes Camera Preview'
 open_window(win_name_eyes)
 
@@ -304,7 +310,7 @@ Slika \ref{fig:sustav1} prikaziva kako okviri izgledaju prije otkrivanja zasljep
 
 Nakon što se uspješno čitaju okviri s kamere koja gleda okolinu koja je ispred vozača, potrebno je analizirati svaki okvir i otkriti nalazi li se na njima zasljepljujuća svjetlost. Ako se svjetlost nalazi na okviru, potrebno je pronaći točne koordinate svjetlosti na okviru. Ovo poglavlje će kroz programski kod \ref{lst:lstlisting_6} koji prikaziva definiranje funkcije $detect\_light()$ za otkrivanje zasljepljujuće svjetlosti opisati navedeni potrebni zadatak.
 
-Potrebno je uključiti biblioteku pomoću sljedećeg programskog koda \ref{lst:lstlisting_numpy}:
+\flushleft Potrebno je uključiti biblioteku pomoću sljedećeg programskog koda \ref{lst:lstlisting_numpy}:
 \begin{lstlisting}[language=Python, label={lst:lstlisting_numpy}, firstnumber=3, style=colored, caption=Uključivanje biblioteke $numpy$]
 import numpy as np
 \end{lstlisting}
@@ -337,6 +343,8 @@ def detect_light(light_frame):
 
     light_frames_queue.put(light_frame)
 \end{lstlisting}
+
+\justifying
 
 Idealno bi bilo kada bi ovakvo rješenje mogli kombinirati i sa senzorom koji može izmjeriti intenzitet svjetlosti jer bi se mogla otkriti i zasljepljujuća svjetlost drugih boja osim raspona bijele boje koji je jedini definiran u ovom rješenju za otkrivanje zasljepljujuće svjetlosti te također bi se svjetlost mogla lakše klasificirati. U programskom kodu \ref{lst:lstlisting_6} definiran je raspon bijele boje koji će se otkrivati na okviru (51. i 52. linija koda). Bijela boja je izabrana zato što je svjetlost najčešće bijele do žute boje.
 
@@ -400,7 +408,7 @@ Prilikom inicijaliziranja objekta klase $CascadeClassifier$ navodi se što je ob
 \pagebreak
 \section{Komponenta za polarizaciju LCD matrice kao reaktivne komponente}
 
-Kada su pozicije zasljepljujućeg svjetla i očiju poznate, potrebno je izračunati na kojem mjestu treba zatamniti LCD matricu, a selektivno zatamnjivanje matrice ustvari znači postavljanje na crnu boju jednog dijela novog zaštitnog okvira koji će se prikazivati u prozoru na LCD matrici. Kako bi se bolje shvatila problematika, sljedeće slike \ref{fig:sustav5} i \ref{fig:sustav6} prikazuju pojednostavljen prikaz sustava u trodimenzionalnom koordinatnom sustavu sa jednakom udaljenosti od matrice:
+Kada su pozicije zasljepljujućeg svjetla i očiju poznate, potrebno je izračunati na kojem mjestu treba zatamniti LCD matricu, a selektivno zatamnjivanje matrice ustvari znači postavljanje na crnu boju jednog dijela novog zaštitnog okvira koji će se prikazivati u prozoru na LCD matrici. Kako bi se bolje shvatila problematika, sljedeće slike \ref{fig:sustav5} i \ref{fig:sustav6} prikazuju pojednostavljen prikaz sustava u trodimenzionalnom koordinatnom sustavu sa jednakom udaljenosti od matrice.
 
 \begin{figure}[h!]
     \centering
@@ -420,7 +428,7 @@ Kada su pozicije zasljepljujućeg svjetla i očiju poznate, potrebno je izračun
 
 Zbog jednostavnosti izračuna, zamišljena udaljenost vozača od LCD matrice i udaljenost zasljepljujućeg svjetla od LCD matrice uzeta je kao jednaka.
 
-Sljedeća slika \ref{fig:sustav4} prikaziva kako ovaj graf izgleda iz druge perspektive, odnosno u dvodimenzionalnom koordinatnom sustavu:
+Sljedeća slika \ref{fig:sustav4} prikaziva kako ovaj graf izgleda iz druge perspektive, odnosno u dvodimenzionalnom koordinatnom sustavu.
 
 \begin{figure}[h!]
     \centering
@@ -430,7 +438,7 @@ Sljedeća slika \ref{fig:sustav4} prikaziva kako ovaj graf izgleda iz druge pers
     \label{fig:sustav4}
 \end{figure}
 
-Nakon razmatranja slike \ref{fig:sustav4} sustava u dvodimenzionalnom polju, dolazi se do zaključka da bi se pozicija pravokutnika crne boje na zaštitnom okviru mogla izračunati pomoću polovišta dužina, što je urađeno programskim kodom \ref{lst:lstlisting_10}:
+Nakon razmatranja slike \ref{fig:sustav4} sustava u dvodimenzionalnom polju, dolazi se do zaključka da bi se pozicija pravokutnika crne boje na zaštitnom okviru mogla izračunati pomoću polovišta dužina, što je urađeno programskim kodom \ref{lst:lstlisting_10}.
 \pagebreak
 \begin{lstlisting}[language=Python, label={lst:lstlisting_10}, firstnumber=33, style=colored, caption={Definicija funkcije $create\_protection\_frame()$}]
 def create_protection_frame():
@@ -464,6 +472,8 @@ def create_protection_frame():
 
     return protection_frame
 \end{lstlisting}
+
+Prikaz funkcioniranja sustava - link na video: \href{https://foi-my.sharepoint.com/:v:/g/personal/spetrovic20_foi_hr/ERfsxYop3VFCnwyEWHfwgokB6hWikBInY5lpKwYVjjt91A?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0RpcmVjdCJ9fQ&e=REgtGV}{https://foi-my.sharepoint.com}
 
 \pagebreak
 \chapter{Testiranje sustava}
