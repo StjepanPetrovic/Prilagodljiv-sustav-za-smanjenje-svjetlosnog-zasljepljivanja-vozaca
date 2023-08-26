@@ -10,7 +10,7 @@ eyes_position_queue = Queue()
 light_position_queue = Queue()
 
 
-def read_camera_frames_and_save_in_queues(stop_event):
+def read_analyze_and_save_frames(stop_event):
     camera_indexes = [0, 2]
 
     eyes_source = cv.VideoCapture(camera_indexes[0])
@@ -88,7 +88,7 @@ def drawText(frame, txt, location, color=(50, 50, 170)):
     cv.putText(frame, txt, location, cv.FONT_HERSHEY_SIMPLEX, 0.4, color, 1)
 
 
-def read_queues_and_show_it(eyes_window, light_window, protection_window):
+def read_calculate_and_show_frames(eyes_window, light_window, protection_window):
     while cv.waitKey(1) != 27:
         eye_frame = eyes_frames_queue.get()
         light_frame = light_frames_queue.get()
@@ -160,9 +160,9 @@ if __name__ == '__main__':
     stop_read_event = threading.Event()
 
     threading.Thread(
-        target=read_camera_frames_and_save_in_queues,
+        target=read_analyze_and_save_frames,
         args=(stop_read_event,),
         daemon=True
     ).start()
 
-    read_queues_and_show_it(win_name_eyes, win_name_light, win_name_protection)
+    read_calculate_and_show_frames(win_name_eyes, win_name_light, win_name_protection)

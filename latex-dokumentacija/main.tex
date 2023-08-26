@@ -207,6 +207,38 @@ win_name_protection = 'Protection Preview'
 open_window(win_name_protection)
 \end{lstlisting}
 
+\subsection{Višedretvenost zbog raspodijele I/O zadataka}
+
+\flushleft Zadatci koje program treba odrađivati su:
+\begin{enumerate}[noitemsep]
+    \item dohvačanje okvirova iz ulaznog uređaja (kamere),
+    \item analiziranje okvirova (detektiranje svjetlosti i očiju),
+    \item spremanje podataka u redove,
+    \item čitanje okvirova iz redova,
+    \item izračunavanje pozicije koju treba zatamniti na LCD matrici,
+    \item prikazivanje okvirova u prozorima na zaslonu.
+\end{enumerate}
+
+\justifying
+
+Navedeni zadatci su većinom vezani za ulazno/izlazne operacije (engl. \emph{input/output bound - I/O bound}) te ih je sve potrebno izvršavati istovremeno, zbog čega je korisno koristiti dretve kako bi se zadatci podijelili po dretvama koje možemo zamisliti kao dodatne radnike u firmi zbog kojih će se moći obaviti više posla paralelno s ostalim poslom. Dretve donose pojednostavljen dizajn koda i njihovo pravilno implementiranje ne može stvoriti situaciju da jedan zadatak zaustavlja izvođenje ostalih zadataka \cite{AndersonJim}.
+
+U CPython implementaciji treba uzeti u obzir da se zbog GIL-a (engl. \emph{Global Interpreter Lock - GIL}) samo jedna dretva može izvršavati Python kod odjednom, a ovo se ograničenje može izbjeći korištenjem specijaliziranih biblioteka, no dojam paralelnosti se ipak postiže visokofrekventnom izmjenom rada nad dretvama. Dretve su prikladne za korištenje kod ulazno/izlaznih operacija, dok se kod procesorski složenijih zadataka savjetuje korištenje procesa \cite{PythonSoftwareFoundation2}. U ovom radu zadatci za analiziranje i izračunavanje nisu procesorski zahtjevni, stoga će ih dretve izvršavati.
+
+Iz glavne dretve programa će se kreirati nova dretva koja će obavljati gore prva tri navedena zadatka: dohvačanje, analiziranje i spremanje pozicija i okvirova, dok će glavna dretva obavljati gore zadnja tri navedena zadatka: čitanje, izračunavanje i prikazivanje pozicija i okvirova. Programski kod \ref{lst:lstlisting_4} prikaziva definiranje i pokretanje nove dretve (162. do 166. linija koda) te pozivanje funkcije (168. linija koda) i inicijaliziranje dretvenog događaja (160. linija) na glavnoj dretvi koji će služiti za prekidanje čitanja okvirova iz kamere na novoj dretvi. Kod stvaranja dretve definirana je funkcija koju ona treba izvršavati, proslijeđen joj je dretveni događaj kako bi ga mogla osluškivati i označena je kao $daemon$ dretva što znači da glavna dretva smije završiti iako ona nije završila.
+
+\begin{lstlisting}[language=Python, label={lst:lstlisting_4}, firstnumber=160, style=colored, caption={Inicijaliziranje dretvenog događaja, stvaranje i pokretanje nove dretve i pozivanje funkcije u glavnoj dretvi}]
+stop_read_event = threading.Event()
+
+threading.Thread(
+    target=read_analyze_and_save_frames,
+    args=(stop_read_event,),
+    daemon=True
+).start()
+
+read_calculate_and_show_frames(win_name_eyes, win_name_light, win_name_protection)
+\end{lstlisting}
+
 \section{Komponenta za prepoznavanje i pozicioniranje izvora svjetla}
 
 \section{Komponenta za prepoznavanje i pozicioniranje očiju vozača}
