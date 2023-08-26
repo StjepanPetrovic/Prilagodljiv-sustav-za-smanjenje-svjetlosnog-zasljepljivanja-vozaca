@@ -400,6 +400,71 @@ Prilikom inicijaliziranja objekta klase $CascadeClassifier$ navodi se što je ob
 \pagebreak
 \section{Komponenta za polarizaciju LCD matrice kao reaktivne komponente}
 
+Kada su pozicije zasljepljujućeg svjetla i očiju poznate, potrebno je izračunati na kojem mjestu treba zatamniti LCD matricu, a selektivno zatamnjivanje matrice ustvari znači postavljanje na crnu boju jednog dijela novog zaštitnog okvira koji će se prikazivati u prozoru na LCD matrici. Kako bi se bolje shvatila problematika, sljedeće slike \ref{fig:sustav5} i \ref{fig:sustav6} prikazuju pojednostavljen prikaz sustava u trodimenzionalnom koordinatnom sustavu sa jednakom udaljenosti od matrice:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{slike/sustav5}
+    \captionsetup{font={small}}
+    \caption{Pojednostavljen prikaz sustava u trodimenzionalnom koordinatnom sustavu sa jednakom udaljenosti od matrice [autorski rad]}
+    \label{fig:sustav5}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{slike/sustav6}
+    \captionsetup{font={small}}
+    \caption{Pojednostavljen prikaz sustava sa simbolično prikazanim okvirima u trodimenzionalnom koordinatnom sustavu sa jednakom udaljenosti od matrice [autorski rad]}
+    \label{fig:sustav6}
+\end{figure}
+
+Zbog jednostavnosti izračuna, zamišljena udaljenost vozača od LCD matrice i udaljenost zasljepljujućeg svjetla od LCD matrice uzeta je kao jednaka.
+
+Sljedeća slika \ref{fig:sustav4} prikaziva kako ovaj graf izgleda iz druge perspektive, odnosno u dvodimenzionalnom koordinatnom sustavu:
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{slike/sustav4}
+    \captionsetup{font={small}}
+    \caption{Pojednostavljen prikaz sustava u dvodimenzionalnom koordinatnom sustavu [autorski rad]}
+    \label{fig:sustav4}
+\end{figure}
+
+Nakon razmatranja slike \ref{fig:sustav4} sustava u dvodimenzionalnom polju, dolazi se do zaključka da bi se pozicija pravokutnika crne boje na zaštitnom okviru mogla izračunati pomoću polovišta dužina, što je urađeno programskim kodom \ref{lst:lstlisting_10}:
+\pagebreak
+\begin{lstlisting}[language=Python, label={lst:lstlisting_10}, firstnumber=33, style=colored, caption={Definicija funkcije $create\_protection\_frame()$}]
+def create_protection_frame():
+    frame_width = 640
+    frame_height = 480
+
+    protection_frame = np.ones((frame_height, frame_width, 3), dtype=np.uint8) * 255
+
+    eye_positions = eyes_position_queue.get()
+    light_positions = light_position_queue.get()
+
+    for light_position in light_positions:
+        for eye_position in eye_positions:
+            eye_x, eye_y, eye_w, eye_h = eye_position
+            light_x, light_y, light_w, light_h = light_position
+
+            protection_x = (eye_x + light_x) // 2
+
+            protection_y = (eye_y + light_y) // 2
+
+            cv.rectangle(
+                protection_frame,
+                (protection_x, protection_y),
+                (protection_x + light_w, protection_y + light_h),
+                (0, 0, 0),
+                -1
+            )
+
+    eyes_position_queue.task_done()
+    light_position_queue.task_done()
+
+    return protection_frame
+\end{lstlisting}
+
 \pagebreak
 \chapter{Testiranje sustava}
 

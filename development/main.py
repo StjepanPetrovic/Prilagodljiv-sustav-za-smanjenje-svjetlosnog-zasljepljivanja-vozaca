@@ -87,7 +87,7 @@ def read_calculate_and_show_frames(eyes_window, light_window, protection_window)
         if eye_frame is None or light_frame is None:
             break
 
-        protection_frame = createProtectionFrame()
+        protection_frame = create_protection_frame()
 
         light_frames_queue.task_done()
         eyes_frames_queue.task_done()
@@ -101,7 +101,7 @@ def read_calculate_and_show_frames(eyes_window, light_window, protection_window)
     cv.destroyAllWindows()
 
 
-def createProtectionFrame():
+def create_protection_frame():
     frame_width = 640
     frame_height = 480
 
