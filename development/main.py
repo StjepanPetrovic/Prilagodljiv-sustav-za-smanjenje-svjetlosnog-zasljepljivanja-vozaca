@@ -71,7 +71,6 @@ def detect_light(light_frame):
 
     drawText(light_frame, 'Press ESC to exit', (20, 20))
 
-    print(light_frame)
     light_frames_queue.put(light_frame)
 
 
