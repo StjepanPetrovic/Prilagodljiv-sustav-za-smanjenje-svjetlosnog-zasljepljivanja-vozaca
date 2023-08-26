@@ -87,7 +87,7 @@ U ovom poglavlju treba opisati koje će metode i tehnike biti korištene pri raz
 
 \chapter{Izrada sustava}
 
-U ovom poglavlju će biti opisana izrada prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača. Ovo će poglavlje biti podijeljeno na četiri podpoglavlja od kojih će svaki opisivati određenu komponentu budući da se sustav sastoji od četiri komponente:
+U ovom poglavlju će biti opisana izrada prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača. Ovo će poglavlje biti podijeljeno na četiri potpoglavlja od kojih će svaki opisivati određenu komponentu budući da se sustav sastoji od četiri komponente:
 \begin{itemize}[noitemsep]
     \item procesna jedinica (laptop) i hardver (web kamere i LCD matrica),
     \item komponenta za prepoznavanje i pozicioniranje izvora svjetla,
@@ -158,21 +158,21 @@ import cv2 as cv
 
 \justifying
 
-\subsection{Redovi kao struktura podataka za spremanje okvirova}
+\subsection{Redovi kao struktura podataka za spremanje okvira}
 
-Ono što algoritam za računalni vid uzima kao ulazni podatak je fotografija odnosno okvir (engl. \emph{frame}) koji se dobiva od kamere koja cijelo vrijeme snima okolinu. Slika \ref{fig:slika_frame} objašnjava kako je skup okvirova odnosno fotografija fotografiranih uzastopno u kratkom vremenskom periodu jednak videu te na taj način video i nastaje \cite{AnimoticaBlog2020}.
+Ono što algoritam za računalni vid uzima kao ulazni podatak je fotografija odnosno okvir (engl. \emph{frame}) koji se dobiva od kamere koja cijelo vrijeme snima okolinu. Slika \ref{fig:slika_frame} objašnjava kako je skup okvira odnosno fotografija fotografiranih uzastopno u kratkom vremenskom periodu jednak videu te na taj način video i nastaje \cite{AnimoticaBlog2020}.
 
 \begin{figure}[h!]
     \centering
     \includegraphics[width=1\textwidth]{slike/frames-per-second-diagram}
     \captionsetup{font={small}}
-    \caption{Prikaz uzastopnih fotografija/okvirova koji čine video od jedne sekunde \cite{AnimoticaBlog2020}}
+    \caption{Prikaz uzastopnih fotografija/okvira koji čine video od jedne sekunde \cite{AnimoticaBlog2020}}
     \label{fig:slika_frame}
 \end{figure}
 
 Budući da kamere cijelo vrijeme snimaju okolinu, one generiraju mnogo fotografiju u stvarnom vremenu od kojih će program uzimati po jednu fotografiju u određenom trenutku, analizirati ih i spremati ih u posebne strukture podataka za daljnju obradu. U ovom radu strukture podataka koje su uzete za ovu svrhu spremanja potrebnih informacija su redovi (engl. \emph{Queues}) tipa FIFO - "prvi ušao, prvi izašao" (engl. \emph{First In First Out - FIFO}).
 
-Razlog zbog čega su odabrani redovi kao struktura podataka u koju će se spremati podaci je taj što redovi osiguravaju sigurno korištenje podataka između više dretava, a tip FIFO zbog toga što je bitno da se prvo analizira okvir koji je najprije došao \cite{PythonSoftwareFoundation}. To će biti vrlo korisno budući da će ovaj program koristiti glavnu dretvu za čitanje okvirova iz redova i njihovo prikazivanje, i drugu dretvu za dobijanje okvirova pomoću kamere, analiziranje i njihovo spremanje u redove. Slika \ref{fig:dijagram_red} slikovito prikaziva red kao strukturu podataka te prikaziva funkcije $get()$ i $put()$ klase $Queue$ pomoću kojih se podaci dodavaju i uzimaju iz redova. Programski kod \ref{lst:lstlisting_2} prikazuje kako uključiti biblioteku i inicijalizirati redove.
+Razlog zbog čega su odabrani redovi kao struktura podataka u koju će se spremati podaci je taj što redovi osiguravaju sigurno korištenje podataka između više dretava, a tip FIFO zbog toga što je bitno da se prvo analizira okvir koji je najprije došao \cite{PythonSoftwareFoundation}. To će biti vrlo korisno budući da će ovaj program koristiti glavnu dretvu za čitanje okvira iz redova i njihovo prikazivanje, i drugu dretvu za dobijanje okvira pomoću kamere, analiziranje i njihovo spremanje u redove. Slika \ref{fig:dijagram_red} slikovito prikaziva red kao strukturu podataka te prikaziva funkcije $get()$ i $put()$ klase $Queue$ pomoću kojih se podaci dodavaju i uzimaju iz redova. Programski kod \ref{lst:lstlisting_2} prikazuje kako uključiti biblioteku i inicijalizirati redove.
 
 \begin{figure}[h!]
     \centering
@@ -192,9 +192,9 @@ eyes_position_queue = Queue()
 light_position_queue = Queue()
 \end{lstlisting}
 
-Programskim kodom \ref{lst:lstlisting_2} inicijalizirani su  $eyes\_frames\_queue$ i $light\_frames\_queue$ redovi koji služe za spremanje okvirova koji se dobiju pomoću kamera i prikazivanje istih okvirova nakon njihova analiziranja te još su inicijalizirani $eyes\_position\_queue$ i $light\_position\_queue$ redovi koji služe za spremanje koordinata za pozicije očiju i izvora svjetla koji se dobiju nakon analiziranja okvirova i služe za kasnije računanje prilikom stvaranje sloja zaštite koji će se prikazivati na LCD matrici.
+Programskim kodom \ref{lst:lstlisting_2} inicijalizirani su  $eyes\_frames\_queue$ i $light\_frames\_queue$ redovi koji služe za spremanje okvira koji se dobiju pomoću kamera i prikazivanje istih okvira nakon njihova analiziranja te još su inicijalizirani $eyes\_position\_queue$ i $light\_position\_queue$ redovi koji služe za spremanje koordinata za pozicije očiju i izvora svjetla koji se dobiju nakon analiziranja okvira i služe za kasnije računanje prilikom stvaranje sloja zaštite koji će se prikazivati na LCD matrici.
 
-Okvirovi se prikazuju u posebno otvorenim prozorima na zaslonu laptopa i LCD matrice koje otvaramo sa programskim kodom \ref{lst:lstlisting_3}. Prvi prozor prikaziva okvirove od kamere koja snima oči vozača, drugi prozor prikaziva okvirove od kamere koja snima vanjsku okolinu koja dolazi ususret vozaču, a treći prozor je prozor koji će biti postavljen na LCD matricu i prikazivat će zaštitni okvir koji je ustvari okvir popunjen bijelom bojom, a crnom bojom na mjestima koja su izračunata kako bi se zatamnio određen dio matrice i spriječilo prodiranje svjetlosti. Kontinuirano prikazivanje okvirova rezultira time da se može u realnom vremenu pratiti ono što kamere gledaju u obliku videa uživo (engl. \emph{live stream}).
+Okviri se prikazuju u posebno otvorenim prozorima na zaslonu laptopa i LCD matrice koje otvaramo sa programskim kodom \ref{lst:lstlisting_3}. Prvi prozor prikaziva okvire od kamere koja snima oči vozača, drugi prozor prikaziva okvire od kamere koja snima vanjsku okolinu koja dolazi ususret vozaču, a treći prozor je prozor koji će biti postavljen na LCD matricu i prikazivat će zaštitni okvir koji je ustvari okvir popunjen bijelom bojom, a crnom bojom na mjestima koja su izračunata kako bi se zatamnio određen dio matrice i spriječilo prodiranje svjetlosti. Kontinuirano prikazivanje okvira rezultira time da se može u realnom vremenu pratiti ono što kamere gledaju u obliku videa uživo (engl. \emph{live stream}).
 
 \begin{lstlisting}[language=Python, label={lst:lstlisting_3}, firstnumber=142, style=colored, caption=Otvaranje prozora na zaslonu]
 win_name_eyes = 'Eyes Camera Preview'
@@ -211,12 +211,12 @@ open_window(win_name_protection)
 
 \flushleft Zadatci koje program treba odrađivati su:
 \begin{enumerate}[noitemsep]
-    \item dohvačanje/čitanje okvirova iz video izvora - ulaznog uređaja (kamere),
-    \item analiziranje okvirova (detektiranje svjetlosti i očiju),
-    \item spremanje pozicija i okvirova u redove,
-    \item čitanje okvirova iz redova,
+    \item dohvačanje/čitanje okvira iz video izvora - ulaznog uređaja (kamere),
+    \item analiziranje okvira (detektiranje svjetlosti i očiju),
+    \item spremanje pozicija i okvira u redove,
+    \item čitanje okvira iz redova,
     \item izračunavanje pozicije koju treba zatamniti na LCD matrici,
-    \item prikazivanje okvirova u prozorima na zaslonu.
+    \item prikazivanje okvira u prozorima na zaslonu.
 \end{enumerate}
 
 \justifying
@@ -225,7 +225,7 @@ Navedeni zadatci su većinom vezani za ulazno/izlazne operacije (engl. \emph{inp
 
 U CPython implementaciji treba uzeti u obzir da se zbog GIL-a (engl. \emph{Global Interpreter Lock - GIL}) samo jedna dretva može izvršavati Python kod odjednom, a ovo se ograničenje može izbjeći korištenjem specijaliziranih biblioteka, no dojam paralelnosti se ipak postiže visokofrekventnom izmjenom rada nad dretvama. Dretve su prikladne za korištenje kod ulazno/izlaznih operacija, dok se kod procesorski složenijih zadataka savjetuje korištenje procesa \cite{PythonSoftwareFoundation2}. U ovom radu zadatci za analiziranje i izračunavanje nisu procesorski zahtjevni, stoga će ih dretve izvršavati.
 
-Iz glavne dretve programa će se kreirati nova dretva koja će obavljati gore prva tri navedena zadatka: čitanje, analiziranje i spremanje pozicija i okvirova, dok će glavna dretva obavljati gore zadnja tri navedena zadatka: čitanje, izračunavanje i prikazivanje pozicija i okvirova. Programski kod \ref{lst:lstlisting_4} prikaziva definiranje i pokretanje nove dretve (153. do 157. linija koda) te pozivanje funkcije (159. linija koda) i inicijaliziranje dretvenog događaja (151. linija) na glavnoj dretvi koji će služiti za prekidanje čitanja okvirova iz kamere na novoj dretvi. Kod stvaranja dretve definirana je funkcija koju ona treba izvršavati, proslijeđen joj je dretveni događaj kako bi ga mogla osluškivati i označena je kao $daemon$ dretva što znači da glavna dretva smije završiti iako ona nije završila. Dretveni događaji su mehanizmi komunikacije između dretava na način da jedna dretva može čekati postavljanje određenog događaja od strane druge dretve kako bi krenula sa svojim radom \cite{PythonSoftwareFoundation2}.
+Iz glavne dretve programa će se kreirati nova dretva koja će obavljati gore prva tri navedena zadatka: čitanje, analiziranje i spremanje pozicija i okvira, dok će glavna dretva obavljati gore zadnja tri navedena zadatka: čitanje, izračunavanje i prikazivanje pozicija i okvira. Programski kod \ref{lst:lstlisting_4} prikaziva definiranje i pokretanje nove dretve (153. do 157. linija koda) te pozivanje funkcije (159. linija koda) i inicijaliziranje dretvenog događaja (151. linija) na glavnoj dretvi koji će služiti za prekidanje čitanja okvira iz kamere na novoj dretvi. Kod stvaranja dretve definirana je funkcija koju ona treba izvršavati, proslijeđen joj je dretveni događaj kako bi ga mogla osluškivati i označena je kao $daemon$ dretva što znači da glavna dretva smije završiti iako ona nije završila. Dretveni događaji su mehanizmi komunikacije između dretava na način da jedna dretva može čekati postavljanje određenog događaja od strane druge dretve kako bi krenula sa svojim radom \cite{PythonSoftwareFoundation2}.
 
 \begin{lstlisting}[language=Python, label={lst:lstlisting_4}, firstnumber=151, style=colored, caption={Inicijaliziranje dretvenog događaja $stop\_read\_event$, stvaranje i pokretanje nove dretve i pozivanje funkcije $read\_analyze\_and\_save\_frames()$ u glavnoj dretvi}]
 stop_read_event = threading.Event()
@@ -239,9 +239,9 @@ threading.Thread(
 read_calculate_and_show_frames(win_name_eyes, win_name_light, win_name_protection)
 \end{lstlisting}
 
-\subsection{Čitanje okvirova sa kamere kao video izvora}
+\subsection{Čitanje okvira sa kamere kao video izvora}
 
-Kako bi se u realnom vremenu moglo detektirati zasljepljujeće svjetlo i oči u cilju smanjivanja zasljepljujećg svjetla potrebno je cijelo vrijeme neprekidno pratiti sadržaj onoga što kamere vide odnosno čitati okvirove sa video izvora. Podsjetnik - jedan pročitan okvir je ustvari jedna fotografija iz videa. Porgramski kod \ref{lst:lstlisting_5} prikazuje definiciju funkcije $read\_analyze\_and\_save\_frames()$ koja se izvršava na posebnoj novoj dretvi, a iz definicije funkcije može se vidjeti kako isprogramirati čitanje okvirova sa video izvora.
+Kako bi se u realnom vremenu moglo detektirati zasljepljujeće svjetlo i oči u cilju smanjivanja zasljepljujećg svjetla potrebno je cijelo vrijeme neprekidno pratiti sadržaj onoga što kamere vide odnosno čitati okvire sa video izvora. Podsjetnik - jedan pročitan okvir je ustvari jedna fotografija iz videa. Porgramski kod \ref{lst:lstlisting_5} prikazuje definiciju $read\_analyze\_and\_save\_frames()$ funkcije koja se izvršava na posebnoj novoj dretvi, a iz definicije funkcije može se vidjeti kako isprogramirati čitanje okvira sa video izvora.
 
 \begin{lstlisting}[language=Python, label={lst:lstlisting_5}, firstnumber=13, style=colored, caption={Definicija funkcije $read\_analyze\_and\_save\_frames()$}]
 def read_analyze_and_save_frames(stop_event):
@@ -265,9 +265,9 @@ def read_analyze_and_save_frames(stop_event):
     light_source.release()
 \end{lstlisting}
 
-Potrebno je inicijalizirati video izvore na način da se pronađu odgovarajući indeksi za kamere koje će se koristiti. U ovom radu, index za ugrađenu kameru laptopa je $0$, dok je za eksternu kameru indeks $2$ (14. linija koda). Kada su uspješno identificirani indeksi za kamere moguće je inicijalizirati video izvore korištenjem klase $VideoCapture$ iz OpenCV biblioteke koja omogućava video snimanje iz kamera i dodatno je moguće snimati iz video datoteka i nizova fotografija/okvirova \cite{OpenCV2} (16. i 17. linija koda). Čitanje iz nizova okvirova će se koristiti u ovom radu prilikom prikazivanja okvirova gdje će se okvirovi čitati iz redova $eyes\_frames\_queue$ i $light\_frames\_queue$. Nakon prestanka korištenja video izvora potrebno je video izvore otpustiti (30. i 31. linija koda).
+Potrebno je inicijalizirati video izvore na način da se pronađu odgovarajući indeksi za kamere koje će se koristiti. U ovom radu, index za ugrađenu kameru laptopa je $0$, dok je za eksternu kameru indeks $2$ (14. linija koda). Kada su uspješno identificirani indeksi za kamere moguće je inicijalizirati video izvore korištenjem klase $VideoCapture$ iz OpenCV biblioteke koja omogućava video snimanje iz kamera i dodatno je moguće snimati iz video datoteka i nizova fotografija/okvira \cite{OpenCV2} (16. i 17. linija koda). Čitanje iz nizova okvira će se koristiti u ovom radu prilikom prikazivanja okvira gdje će se okviri čitati iz redova $eyes\_frames\_queue$ i $light\_frames\_queue$. Nakon prestanka korištenja video izvora potrebno je video izvore otpustiti (30. i 31. linija koda).
 
-Nakon što su video izvori  inicijalizirani moguće je čitati okvirove iz njih. Kako bi cijelo vrijeme neprekidno čitali jedan po jedan okvir sa kamere i prikazivali ih u stvarnom vremenu, potrebno je koristiti $while$ $True$ petlju. U ovom radu koristi se $while$ $not$ $stop\_event.is\_set()$ petlja (19. linija koda) kod koje je izraz $not stop\_event.is\_set()$ uvijek jednak Booleovoj vrijednosti $True$, zbog čega će se stalno izvršavati dok događaj $stop\_event$ koji je kao argument proslijeđen u $read\_analyze\_and\_save\_frames()$ funkciju ne bude postavljen na $True$ u slučaju kada korisnik želi prekinuti program.
+Nakon što su video izvori  inicijalizirani moguće je čitati okvire iz njih. Kako bi cijelo vrijeme neprekidno čitali jedan po jedan okvir sa kamere i prikazivali ih u stvarnom vremenu, potrebno je koristiti $while$ $True$ petlju. U ovom radu koristi se $while$ $not$ $stop\_event.is\_set()$ petlja (19. linija koda) kod koje je izraz $not stop\_event.is\_set()$ uvijek jednak Booleovoj vrijednosti $True$, zbog čega će se stalno izvršavati dok događaj $stop\_event$ koji je kao argument proslijeđen u $read\_analyze\_and\_save\_frames()$ funkciju ne bude postavljen na $True$ u slučaju kada korisnik želi prekinuti program.
 
 Okvir se čita sa metodom $read()$ iz klase $VideoCapture$ (20. i 21. linija koda), a ona objedinjuje metode $grab()$ i $retrieve()$ te dekodira vrijednost okvira \cite{OpenCV2}. Metoda $read()$ vraća informacije o tome je li okvir uspješno pročitan i njegovu vrijednost, a njegova vrijednost je u formi $NumPy$ niza \cite{Reshma2023}. Na slici \ref{fig:ispis_okvira} može se vidjeti da taj NumPy niz sadrži cjelobrojne vrijednosti (engl. \emph{integers}) koje predstavljaju RGB vrijednosti kanala piksela sa fotografije odnosno okvira. NumPy biblioteka služi za rad sa nizovima \cite{NumPy}. Ako okvir nije uspješno pročitan, prekida se izvođenje petlje (23. do 25. linija koda).
 
