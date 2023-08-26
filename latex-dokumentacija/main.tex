@@ -153,7 +153,7 @@ Programski jezik Python je izabran zbog osobnih preferencija autora. Treba se uz
 te je potrebno postaviti "conda" radno okruženje: \url{https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html}.
 
 Nakon instalacije moguće je uključiti biblioteku pomoću sljedećeg programskog koda \ref{lst:lstlisting_1}:
-\begin{lstlisting}[language=Python, label={lst:lstlisting_1}, firstnumber=1, style=colored, caption=Uključivanje biblioteke OpenCV za korištenje]
+\begin{lstlisting}[language=Python, label={lst:lstlisting_1}, firstnumber=1, style=colored, caption=Uključivanje biblioteke $OpenCV$]
 import cv2 as cv
 \end{lstlisting}
 
@@ -226,6 +226,11 @@ Navedeni zadatci su većinom vezani za ulazno/izlazne operacije (engl. \emph{inp
 
 U CPython implementaciji treba uzeti u obzir da se zbog GIL-a (engl. \emph{Global Interpreter Lock - GIL}) samo jedna dretva može izvršavati Python kod odjednom, a ovo se ograničenje može izbjeći korištenjem specijaliziranih biblioteka, no dojam paralelnosti se ipak postiže visokofrekventnom izmjenom rada nad dretvama. Dretve su prikladne za korištenje kod ulazno/izlaznih operacija, dok se kod procesorski složenijih zadataka savjetuje korištenje procesa \cite{PythonSoftwareFoundation2}. U ovom radu zadatci za analiziranje i izračunavanje nisu procesorski zahtjevni, stoga će ih dretve izvršavati.
 
+\flushleft Potrebno je uključiti biblioteku pomoću sljedećeg programskog koda \ref{lst:lstlisting_thread}:
+\begin{lstlisting}[language=Python, label={lst:lstlisting_thread}, firstnumber=2, style=colored, caption=Uključivanje biblioteke $threading$]
+import threading
+\end{lstlisting}
+
 Iz glavne dretve programa će se kreirati nova dretva koja će obavljati gore prva tri navedena zadatka: čitanje, analiziranje i spremanje pozicija i okvira, dok će glavna dretva obavljati gore zadnja tri navedena zadatka: čitanje, izračunavanje i prikazivanje pozicija i okvira. Programski kod \ref{lst:lstlisting_4} prikaziva definiranje i pokretanje nove dretve (153. do 157. linija koda) te pozivanje funkcije (159. linija koda) i inicijaliziranje dretvenog događaja (151. linija) na glavnoj dretvi koji će služiti za prekidanje čitanja okvira iz kamere na novoj dretvi. Kod stvaranja dretve definirana je funkcija koju ona treba izvršavati, proslijeđen joj je dretveni događaj kako bi ga mogla osluškivati i označena je kao $daemon$ dretva što znači da glavna dretva smije završiti iako ona nije završila. Dretveni događaji su mehanizmi komunikacije između dretava na način da jedna dretva može čekati postavljanje određenog događaja od strane druge dretve kako bi krenula sa svojim radom \cite{PythonSoftwareFoundation2}.
 
 \begin{lstlisting}[language=Python, label={lst:lstlisting_4}, firstnumber=151, style=colored, caption={Inicijaliziranje dretvenog događaja $stop\_read\_event$, stvaranje i pokretanje nove dretve i pozivanje funkcije $read\_analyze\_and\_save\_frames()$ u glavnoj dretvi}]
@@ -295,6 +300,11 @@ Slika \ref{fig:sustav1} prikaziva kako okviri izgledaju prije otkrivanja zasljep
 \section{Komponenta za prepoznavanje i pozicioniranje izvora svjetla}
 
 Nakon što se uspješno čitaju okviri s kamere koja gleda okolinu koja je ispred vozača, potrebno je analizirati svaki okvir i otkriti nalazi li se na njima zasljepljujuća svjetlost. Ako se svjetlost nalazi na okviru, potrebno je pronaći točne koordinate svjetlosti na okviru. Ovo poglavlje će kroz programski kod \ref{lst:lstlisting_6} koji prikaziva definiranje funkcije $detect\_light()$ za otkrivanje zasljepljujuće svjetlosti opisati navedeni potrebni zadatak.
+
+Potrebno je uključiti biblioteku pomoću sljedećeg programskog koda \ref{lst:lstlisting_numpy}:
+\begin{lstlisting}[language=Python, label={lst:lstlisting_numpy}, firstnumber=3, style=colored, caption=Uključivanje biblioteke $numpy$]
+import numpy as np
+\end{lstlisting}
 
 \begin{lstlisting}[language=Python, label={lst:lstlisting_6}, firstnumber=50, style=colored, caption={Definicija funkcije $detect\_light()$}]
 def detect_light(light_frame):
@@ -366,8 +376,8 @@ Ovdje treba sažeto rezimirati najvažnije rezultate razrade teme rada. Potrebno
 
 \listoffigures
 \addcontentsline{toc}{chapter}{Popis slika}
- 
-\listoftables
-\addcontentsline{toc}{chapter}{Popis popis tablica}
+
+\lstlistoflistings
+\addcontentsline{toc}{chapter}{Popis programskih kodova}
 
 \end{document}
