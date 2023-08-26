@@ -144,13 +144,13 @@ OpenCV je biblioteka otvorenog koda (engl. \emph{open source}) koja služi za rj
 
 Programski jezik Python je izabran zbog osobnih preferencija autora. Treba se uzeti u obzir da je Python sporiji programski jezik u odnosu na C++ koji je se također mogao koristiti u ovom radu, no moguće je imati i Python module koji će sadržavati C++ programski kod za procesorski intenzivne zadatke, a rezultat toga je da se izvršavanja Python programskog koda izvršava približno jednakom brzinom kao i brzina izvršavanja C++ programskog koda jer se C++ kod izvršava u pozadini te lakše je programirati u Python programskom jeziku nego u C++ programskom jeziku \cite{opencv-python}.
 
-\flushleft Kako bi koristili biblioteku OpenCV sa programskim jezikom Python potrebno ju je prvo instalirati prema uputama za odgovarajući operativni sustav (OS) za:
+Kako bi se koristila biblioteka OpenCV sa programskim jezikom Python potrebno ju je prvo instalirati. U terminalu unesite komandu: $pip$ $install$ $opencv-python$ i OpenCV biblioteka će biti instalirana. Ako ju želite korisiti u $conda$ radnom okruženju koje nudi dodatne pogodnosti slijediti upute za odgovarajući operativni sustav (OS) za:
 \begin{itemize}[noitemsep]
     \item Linux OS: \url{https://youtu.be/gt0Mpi6FFzQ?si=QCLjiDrJcBCP5qV8},
     \item Windows OS: \url{https://youtu.be/RfFiTozvOdQ?si=6jtyHU4YK9jsi6kv},
     \item MacOS: \url{https://youtu.be/hZWgEPOVnuM?si=kD9CNUf4kNqyWBBK},
 \end{itemize}
-te je potrebno postaviti "conda" radno okruženje: \url{https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html}.
+te je potrebno postaviti $conda$ radno okruženje: \url{https://www.jetbrains.com/help/pycharm/conda-support-creating-conda-virtual-environment.html}.
 
 Nakon instalacije moguće je uključiti biblioteku pomoću sljedećeg programskog koda \ref{lst:lstlisting_1}:
 \begin{lstlisting}[language=Python, label={lst:lstlisting_1}, firstnumber=1, style=colored, caption=Uključivanje biblioteke $OpenCV$]
@@ -231,6 +231,8 @@ U CPython implementaciji treba uzeti u obzir da se zbog GIL-a (engl. \emph{Globa
 import threading
 \end{lstlisting}
 
+\justifying
+
 Iz glavne dretve programa će se kreirati nova dretva koja će obavljati gore prva tri navedena zadatka: čitanje, analiziranje i spremanje pozicija i okvira, dok će glavna dretva obavljati gore zadnja tri navedena zadatka: čitanje, izračunavanje i prikazivanje pozicija i okvira. Programski kod \ref{lst:lstlisting_4} prikaziva definiranje i pokretanje nove dretve (153. do 157. linija koda) te pozivanje funkcije (159. linija koda) i inicijaliziranje dretvenog događaja (151. linija) na glavnoj dretvi koji će služiti za prekidanje čitanja okvira iz kamere na novoj dretvi. Kod stvaranja dretve definirana je funkcija koju ona treba izvršavati, proslijeđen joj je dretveni događaj kako bi ga mogla osluškivati i označena je kao $daemon$ dretva što znači da glavna dretva smije završiti iako ona nije završila. Dretveni događaji su mehanizmi komunikacije između dretava na način da jedna dretva može čekati postavljanje određenog događaja od strane druge dretve kako bi krenula sa svojim radom \cite{PythonSoftwareFoundation2}.
 
 \begin{lstlisting}[language=Python, label={lst:lstlisting_4}, firstnumber=151, style=colored, caption={Inicijaliziranje dretvenog događaja $stop\_read\_event$, stvaranje i pokretanje nove dretve i pozivanje funkcije $read\_analyze\_and\_save\_frames()$ u glavnoj dretvi}]
@@ -297,6 +299,7 @@ Slika \ref{fig:sustav1} prikaziva kako okviri izgledaju prije otkrivanja zasljep
     \label{fig:sustav1}
 \end{figure}
 
+\pagebreak
 \section{Komponenta za prepoznavanje i pozicioniranje izvora svjetla}
 
 Nakon što se uspješno čitaju okviri s kamere koja gleda okolinu koja je ispred vozača, potrebno je analizirati svaki okvir i otkriti nalazi li se na njima zasljepljujuća svjetlost. Ako se svjetlost nalazi na okviru, potrebno je pronaći točne koordinate svjetlosti na okviru. Ovo poglavlje će kroz programski kod \ref{lst:lstlisting_6} koji prikaziva definiranje funkcije $detect\_light()$ za otkrivanje zasljepljujuće svjetlosti opisati navedeni potrebni zadatak.
@@ -341,32 +344,66 @@ Kao argument ova funkcija prima okvir koji treba analizirati. Potrebno je tom ok
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.7\textwidth]{slike/cb_maska_okvir}
+    \includegraphics[width=0.6\textwidth]{slike/cb_maska_okvir}
     \captionsetup{font={small}}
     \caption{Prikaz crno-bijele maske okvira [autorski rad]}
     \label{fig:maska}
 \end{figure}
 
-Sada se može reći da je zasljepljujuća svjetlost detektirana, ali se ne zna njezina točna pozicija s koordinatama što će poslužiti kod obavljanja računanja zaštitnog okvira za LCD matricu. Stoga svo ovo provedeno pretvaranje okvira je učinjeno zbog toga što će maska okvira biti proslijeđena funkciji $findContours()$ biblioteke OpenCV koja još prima argumente $cv.RETR\_EXTERNAL$ i $cv.CHAIN\_APPROX\_SIMPLE$ koji definiraju kakve će se konture praviti (58. linija koda). U ovom rješenju kontura predstavlja pravokutnik koji obuhvaća objekt od interesa i za taj pravokutnik dobijemo koordinate gornje lijeve točke, visinu i širinu. Funkcija $findContours()$ nije obavezno tražila svo provedeno pretvaranje okvira ali zbog boljeg pronalska kontura preporučeno je da funkcija primi binarni okvir - crno-bijelu masku kako bi rubovi bili što izraženiji \cite{OpenCV4}. Kako bi samo imali konture najizraženijih i najvećih svjetlosti odrađeno je i filtriranje (60. i 61. linija koda).
+Sada se može reći da je zasljepljujuća svjetlost otkrivena, ali se ne zna njezina točna pozicija s koordinatama što će poslužiti kod obavljanja računanja zaštitnog okvira za LCD matricu. Stoga svo ovo provedeno pretvaranje okvira je učinjeno zbog toga što će maska okvira biti proslijeđena funkciji $findContours()$ biblioteke OpenCV koja još prima argumente $cv.RETR\_EXTERNAL$ i $cv.CHAIN\_APPROX\_SIMPLE$ koji definiraju kakve će se konture praviti (58. linija koda). U ovom rješenju kontura predstavlja pravokutnik koji obuhvaća objekt od interesa i za taj pravokutnik dobijemo koordinate gornje lijeve točke, visinu i širinu. Funkcija $findContours()$ nije obavezno tražila svo provedeno pretvaranje okvira ali zbog boljeg pronalska kontura preporučeno je da funkcija primi binarni okvir - crno-bijelu masku kako bi rubovi bili što izraženiji \cite{OpenCV4}. Kako bi samo imali konture najizraženijih i najvećih svjetlosti odrađeno je i filtriranje (60. i 61. linija koda).
 
-Sada je potrebno proći kroz svaku pronađenu konturu kako bi ju dodali u $light\_position\_queue$ red i kako bi na originalnom okviru iscrtali zeleni pravokutnik oko zasljepljujuće svjetlosti i spremili originalni okvir u $light\_framesq\_queue$ red (63. do 75. linija koda). Potrebno je naglasiti da pralaleno radi i glavna dretva koja odmah uzima okvire stavljene u red i prikaziva ih u prozorima na zaslonu, a o tome će biti više rijeći u poglavlju "Komponenta za polarizaciju LCD matrice kao reaktivne komponente". Iscrtavanje zelenog pravokutnika na originalnom okviru (slika \ref{fig:sustav2}) napravljeno je samo zbog toga kako bi se uvjerili da detektiranje zasljepljujuće svjetlosti radi:
+Sada je potrebno proći kroz svaku pronađenu konturu kako bi ju dodali u $light\_position\_queue$ red i kako bi na originalnom okviru iscrtali zeleni pravokutnik oko zasljepljujuće svjetlosti i spremili originalni okvir u $light\_framesq\_queue$ red (63. do 75. linija koda). Potrebno je naglasiti da pralaleno radi i glavna dretva koja odmah uzima okvire stavljene u red i prikaziva ih u prozorima na zaslonu, a o tome će biti više rijeći u poglavlju "Komponenta za polarizaciju LCD matrice kao reaktivne komponente". Iscrtavanje zelenog pravokutnika na originalnom okviru (slika \ref{fig:sustav2}) napravljeno je samo zbog toga kako bi se uvjerili da otkrivena zasljepljujuće svjetlosti radi:
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.7\textwidth]{slike/sustav2}
+    \includegraphics[width=0.6\textwidth]{slike/sustav2}
     \captionsetup{font={small}}
-    \caption{Prikaz detektirane svjetlosti [autorski rad]}
+    \caption{Prikaz otkrivene svjetlosti [autorski rad]}
     \label{fig:sustav2}
 \end{figure}
 
+\pagebreak
 \section{Komponenta za prepoznavanje i pozicioniranje očiju vozača}
 
-Nakon što se uspješno čitaju okviri s kamere koja gleda u vozača, potrebno je analizirati svaki okvir i otkriti nalaze li se na njima oči. Ako se oči nalaze na okviru, potrebno je pronaći točne koordinate očiju na okviru.
+Nakon što se uspješno čitaju okviri s kamere koja gleda u vozača, potrebno je analizirati svaki okvir i otkriti nalaze li se na njima oči. Ako se oči nalaze na okviru, potrebno je pronaći točne koordinate očiju na okviru. Ovo poglavlje će kroz programski kod \ref{lst:lstlisting_9} koji prikaziva definiranje funkcije $detect\_eyes()$ za otkrivanje očiju opisati navedeni potrebni zadatak.
 
+\begin{lstlisting}[language=Python, label={lst:lstlisting_9}, firstnumber=33, style=colored, caption={Definicija funkcije $detect\_eyes()$}]
+def detect_eyes(eyes_frame):
+    eyes_gray_frame = cv.cvtColor(eyes_frame, cv.COLOR_BGR2GRAY)
+
+    eye_cascade_model = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_eye.xml')
+
+    eyes = eye_cascade_model.detectMultiScale(eyes_gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+    eyes_position_queue.put(eyes)
+
+    for (x, y, w, h) in eyes:
+        cv.rectangle(eyes_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    drawText(eyes_frame, 'Press ESC to exit', (20, 20))
+
+    eyes_frames_queue.put(eyes_frame)
+\end{lstlisting}
+
+Otkrivanje očiju se vrši pomoću OpenCV klase $CascadeClassifier$ koja je model za otkrivanje objekata pomoću Haar kaskadnih klasifikatora, a to je pristup temeljen na strojnom učenju gdje je je kaskadna funkcija trenirana na mnogo pozitivnih (sadržavaju objekt od interesa) i negativnih fotografija (ne sadržavaju objekt od interesa) \cite{OpenCV5}. Prije nego se krene analizirati okvir, preporučeno je zbog boljih rezultata da se okvir prebaci u sivi prostor boja (34. linija koda).
+
+Prilikom inicijaliziranja objekta klase $CascadeClassifier$ navodi se što je objekt od interesa - ovdje je to oko (36. linija koda). Kada je objekt inicijaliziran možemo njegovoj metodi $detectMultiScale$ proslijediti okvir koji se treba analizirati te je još moguće proslijediti argumenata koji bi utjecali na rezultat. Kao rezultat metoda vraća otkrivene objekte različitih veličina u obliku liste pravokutnika koji opisuju točnu poziciju (koordinate gornjeg lijevog kuta pravokutnika na okviru te njegova duljina i širina) očiju na okviru \cite{OpenCV6}. Lista pravokutnika se sprema u $eyes\_position\_queue$ red za daljno računanje (40. linija koda), a još će se i lista pravokutnika iscrtati na originalnim okvirima i spremiti u $eyes\_frames\_queue$ red kako bi prilikom prikazivanja okvira uvidjeli da komponenta pravilno radi (slika \ref{fig:sustav3}).
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{slike/sustav3}
+    \captionsetup{font={small}}
+    \caption{Prikaz otkrivenih očiju [autorski rad]}
+    \label{fig:sustav3}
+\end{figure}
+
+\pagebreak
 \section{Komponenta za polarizaciju LCD matrice kao reaktivne komponente}
 
+\pagebreak
 \chapter{Testiranje sustava}
 
+\pagebreak
 \chapter{Zaključak}
 
 Ovdje treba sažeto rezimirati najvažnije rezultate razrade teme rada. Potrebno je sažeto opisati što je predmet rada, koje su metode, tehnike, programski alati ili aplikacije korištene u razradi rada te koje su pretpostavke dokazane, a koje opovrgnute. Sadržajno, ono što se u uvodu rada najavljuje i kasnije je obuhvaćeno u samom radu, moralo bi biti opisano u zaključnom dijelu kroz rezultate rada.
