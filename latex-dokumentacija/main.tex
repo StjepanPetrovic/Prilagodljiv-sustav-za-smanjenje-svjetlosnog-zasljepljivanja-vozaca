@@ -85,6 +85,24 @@ Programski kod i \LaTeX \space dokumentacija je verzionizirana na GitHub repozit
 
 \chapter{Pregled literature}
 
+U nastavku ovog poglavlja obrađuje se literatura koja je vezana za temu sustava za smanjenje svjetlosnog zasljepljivanja vozača.
+
+\section{Troxlerov efekt}
+
+Razlog zbog kojeg je potreban ovakav sustav je Troxlerov efekt (engl. \emph{Troxler Effect} ili \emph{fading effect}) koji može nastati tijekom vožnje \cite{Autoevolution2022}. Troxlerov efekt je poznat fenomen u području percepcije i vizualne psihologije. Ovaj efekt opisuje trenutnu sljepoću i ilustrira kako naš mozak percipira i procesira vizualne informacije te kako se te informacije mogu mijenjati ako gledamo na istu stvar dulje vrijeme ili ako smo pod utjecajem jakog izvora svjetlosti zbog čega se povečava vozačevo vrijeme za reakciju \cite[str. 208]{P2014}.
+
+Osnovna pojava Troxlerovog efekta događa se kada fiksiramo svoj pogled na jedan objekt ili točku na nekom statičkom pozadinom duže vrijeme. Kako vrijeme prolazi, percepcija tog objekta ili točke počinje mijenjati. Okolni detalji i boje počinju blijedjeti i nestajati iz našeg vidnog polja. Ako bi se 10 do 15 sekundi fokusirao pogled u crvenu točku na slici \ref{fig:troxlerov_efekt}, mogao bi se iskusiti Troxlerov efekt zbog kojeg će se zeleni krug početi gubiti iz perifernog vida. \cite[str. 664]{Kanai2003}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{slike/troxler_effect}
+    \captionsetup{font={small}}
+    \caption{Prikaz kod kojeg se javlja Troxlerov efekt \cite{Autoevolution2022}}
+    \label{fig:troxlerov_efekt}
+\end{figure}
+
+Zaslijepljivanje je uobičajena situacija u prometu koja se događa kada svjetlosni izvor, kao što su duga svjetla ili sunce, izravno udara u oči vozača. Ovaj nagli prelazak iz tame u svjetlo može uzrokovati privremeno zaslijepljenje vozača. Troxlerov efekt se uklapa u ovu situaciju na način da kada vozač gleda u izvor jakog svjetla, kao što su duga svjetla, to svjetlo postaje dominantno u njihovom vidnom polju. Troxlerov efekt se tada javlja kao rezultat fiksiranja pogleda na tu svijetlu točku. Okolni detalji na cesti, kao što su prometni znakovi, vozila ili pješaci, postaju manje vidljivi jer mozak počinje "zaboravljati" ili smanjivati percepciju tih podražaja koji se ne mijenjaju. Dakle, vozač može primijetiti da su ti detalji na cesti ili druga vozila postali manje vidljivi ili zamagljeni. \cite{Autoevolution2022}
+
 \chapter{Izrada sustava}
 
 U ovom poglavlju će biti opisana izrada prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača. Ovo će poglavlje biti podijeljeno na četiri potpoglavlja od kojih će svaki opisivati određenu komponentu budući da se sustav sastoji od četiri komponente:
