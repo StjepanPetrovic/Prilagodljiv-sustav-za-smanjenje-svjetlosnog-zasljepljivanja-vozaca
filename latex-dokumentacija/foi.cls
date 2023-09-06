@@ -16,7 +16,7 @@
 \RequirePackage{amsmath} % Uključeno jer je često korišteno
 \RequirePackage{caption}
 \RequirePackage{ifthen}
-\RequirePackage{url} % Potrebno radi natbiba
+\RequirePackage{xurl} % Potrebno radi natbiba
 \RequirePackage{enumitem} % Potrebno radi izmjene itemize okoline
 \RequirePackage{titlesec}
 \RequirePackage{tabularx} % tablice
