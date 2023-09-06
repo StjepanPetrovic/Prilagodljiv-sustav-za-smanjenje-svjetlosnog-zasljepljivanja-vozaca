@@ -44,6 +44,8 @@ U nastavku rada za izraz „prilagodljiv sustav za smanjenje svjetlosnog zasljep
 
  Bilo je potrebno napraviti sustav koji u realnom vremenu prepoznaje izvor zasljepljujućeg svjetla te reagira na način da polarizira određeni dio reaktivne komponente (LCD matrice) koja bi se nalazila na vjetrobranskom staklu vozila te na taj način smanji jačinu zasljepljujućeg svjetla ispred vozača u vozilu.
 
+ Problem se temelji na potrebi za smanjenjem zasljepljujućeg svjetla koje može uzrokovati privremeno zaslijepljenje vozača, kao što su svjetla iz suprotnog smjera tijekom noći ili sunčeva svjetlost tijekom dana. Cilj ove tehnologije je selektivno smanjiti intenzitet zasljepljujućeg svjetla putem transparentne površine koja ima sposobnost kontroliranja transparentnosti na određenim mjestima na površini. Budući da je položaj zasljepljujućeg svjetla na takvoj površini mobilan, koriste se algoritmi za identifikaciju položaja zasljepljujućeg svjetla unutar vidnog polja.
+
  Na slici \ref{fig:prikaz_sustava_1} može se vidjeti da takav sustav treba imati ulazne uređaje pomoću kojih će vidjeti što se događa u okolini vozača. Za ulazne uređaje su uzete dvije web kamere čiji je sadržaj onoga što vide predstavljen kao narančasti i zeleni okvir na slici \ref{fig:prikaz_sustava_1}, a taj sadržaj će obrađivati istrenirani modeli za računalni vid iz biblioteke OpenCV te će tako procesna jedinica znati gdje se nalaze oči vozača i izvor svjetla koji su predstavljeni kao crveni krugovi odnosno baze valjka na narančastom i zelenom okviru na slici \ref{fig:prikaz_sustava_1}. Kada procesna jedinica to zna, potrebno je pomoću algoritma izračunati koji točno dio LCD matrice treba polarizirati/zatamniti, a taj dio koji treba polarizirati je prikazan na slici \ref{fig:prikaz_sustava_1} kao crveni krug na crnom okviru odnosno intersekcija žutog plašta valjka, koji predstavlja svjetlost, sa crnim okvirom koji predstavlja reaktivnu komponentu (LCD matricu). Interaktivnom grafu sa slike \ref{fig:prikaz_sustava_1} može se pristupiti preko linka: \url{https://www.geogebra.org/m/hvzfyjfz}.
 
 
@@ -102,6 +104,123 @@ Osnovna pojava Troxlerovog efekta događa se kada fiksiramo svoj pogled na jedan
 \end{figure}
 
 Zaslijepljivanje je uobičajena situacija u prometu koja se događa kada svjetlosni izvor, kao što su duga svjetla ili sunce, izravno udara u oči vozača. Ovaj nagli prelazak iz tame u svjetlo može uzrokovati privremeno zaslijepljenje vozača. Troxlerov efekt se uklapa u ovu situaciju na način da kada vozač gleda u izvor jakog svjetla, kao što su duga svjetla, to svjetlo postaje dominantno u njihovom vidnom polju. Troxlerov efekt se tada javlja kao rezultat fiksiranja pogleda na tu svijetlu točku. Okolni detalji na cesti, kao što su prometni znakovi, vozila ili pješaci, postaju manje vidljivi jer mozak počinje "zaboravljati" ili smanjivati percepciju tih podražaja koji se ne mijenjaju. Dakle, vozač može primijetiti da su ti detalji na cesti ili druga vozila postali manje vidljivi ili zamagljeni. \cite{Autoevolution2022}
+
+\section{Sustavi za smanjenje svjetlosnog zasljepljivanja vozača}
+
+U nastavku će biti opisani postojeći sustavi koji se koriste u autoindutstriji ili su tek prototipi te patenti koji opisuju takve sustave koji se bore protiv nastanka Troxlerovog efekta odnosno svjetlosnog zasljpljivanja vozača uzrokovanog jakim izvorima svjetla poput dugih svjetala vozila. Takvi sustavi zastupaju jednu od dvije sljedeće ideje odnosno cilja u autoindustriji kada je u pitanju zaštita vozača od zasljepljujuće svjetlosti:
+
+\begin{itemize}[noitemsep]
+    \item napraviti sustav koji će štiti jednog vozača, odnosno onog vozača koji se nalazi u automobilu u kojem je takav sustav i ugrađen,
+    \item napraviti sutav koji će štiti ostale vozače od dugih svjetala automobila u kojem je takav sustav ugrađen.
+\end{itemize}
+
+Na kraju rada je napisana usporedba sustava koji je izrađen ovim radom sa određenim sustavima koji su opisani u ovom potpoglavlj u nastavku.
+
+\subsection{Sustavi namjenjeni zaštiti jednog vozača}
+
+\subsubsection{Bosch: LCD vizir podržan umjetnom inteligencijom}
+
+Današnja automobilska industrija neprestano radi na razvoju novih tehnologija kako bi poboljšala sigurnost i udobnost vožnje. Jedan od najnovijih inovativnih proizvoda na tržištu prikazan na slici \ref{fig:bosch_lcd}, Boschov LCD vizir podržan umjetnom inteligencijom, predstavlja značajan korak prema ostvarenju ovih ciljeva. Bosch je kompanija koja je jedna od vodećih svjetskih dobavljača tehnologija i usluga \cite{Bosch}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{slike/bosch_virtual_visor}
+    \captionsetup{font={small}}
+    \caption{Ilustrativni prikaz za Boschov LCD vizir \cite{Chris}}
+    \label{fig:bosch_lcd}
+\end{figure}
+
+Štitnici za sunce su neizostavan dio svakog vozila već dugi niz godina. Njihova svrha je zaštita vozača i putnika od oštre sunčeve svjetlosti koja može uzrokovati zasljepljivanje i smanjiti vidljivost na cesti. Tradicionalni štitnici za sunce obično su pasivni, što znači da ne reagiraju na promjene uvjeta na cesti. Međutim, Bosch-ova inovacija donosi potpuno novu perspektivu.
+
+Jedna od ključnih značajki Boschovog LCD vizira podržanog umjetnom inteligencijom je njihova sposobnost pametne reakcije na svjetlost. Opremljen je senzorima koji neprestano mjere intenzitet svjetla izvan vozila. Kada senzori detektiraju nagli porast svjetlosnog intenziteta, vizir automatski reagira i prigušuju staklo odnosno LCD matricu/panel. Ovo dinamičko prigušivanje omogućuje očuvanje optimalnih uvjeta za vozača i putnike čak i kad se vozi pod jakim sunčevim svjetlom. Njihov vizir, predstavljen na CES 2020, koristi prozirnu LCD matricu i kameru koja se okreće prema vozaču s umjetnom inteligencijom kako bi pratio pogled vozača i blokirao odsjaj sunca \cite{Chris}.
+
+Umjesto tradicionalnog sjenila za sunce koje blokira veliki dio vidnog polja vozača, vizir precizno blokira samo dio vidnog polja gdje se nalazi odsjaj sunca. To omogućuje vozaču da zadrži jasan pogled na cestu i okoliš, dok istovremeno smanjuje ometanje od odsjaja sunca. Vizir koristi napredne algoritme za praćenje lica i očiju kako bi odredio položaj očiju vozača i kut gledanja. Zatim koristi tu informaciju kako bi precizno blokirao odsjaj sunca pomoću prozirnog LCD panela. Panel se može prilagoditi u stvarnom vremenu kako bi osigurao optimalnu vidljivost za vozača.
+
+Ovaj proizvod je tek prototip (slika \ref{fig:bosch_lcd_2}) koji je najsličiniji prototipu koji će biti opisan u ovom radu te ova tehnologija ima potencijal da poboljša sigurnost na cestama smanjenjem rizika od privremenog sljepila uzrokovanog odsjajem sunca. Također može poboljšati udobnost vožnje tako što omogućuje vozačima da zadrže jasan pogled na cestu bez potrebe za neprestanim podešavanjem sjenila za sunce. Bosch nastavlja razvijati Virtual Visor i istraživati nove načine primjene ove tehnologije. U budućnosti bismo mogli vidjeti još naprednije sustave koji koriste umjetnu inteligenciju i strojno učenje kako bi poboljšali sigurnost i udobnost vožnje \cite{Chris}.
+
+Sličan koncept je opisan i u istraživačkom radu "Adaptive LCD Windshield Glare Elimination System" \cite{Shreesha2019} i u radu "Automatic anti-glare system for night time driving using liquid crystal screens" \cite{Pankaj}.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{slike/bosch-virtual-visor-2}
+    \captionsetup{font={small}}
+    \caption{Prikaz prototipa za Bosch LCD vizir \cite{Chris}}
+    \label{fig:bosch_lcd_2}
+\end{figure}
+
+\subsubsection{Patent US2006140502A1: "Active visor system for eliminating glare in field-of-vision from mobile and transient light sources and reflective surfaces"}
+
+Ovaj patent napisan je kako bi se riješio problem zasljepljujućeg svjetla koje vozači doživljavaju tijekom vožnje. Zasljepljujuće svjetlo može potjecati od različitih izvora, uključujući svjetla iz suprotnog smjera, sunčevu svjetlost i reflektirajuće površine. Ovaj izum pruža rješenje za automatsko i selektivno smanjenje intenziteta takvog svjetla kako bi vozači zadržali jasnu vidljivost i smanjili rizik od zaslijepljenosti \cite{Allan2006}. Skica izuma prikazana je na slici \ref{fig:patent1}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{slike/patent1}
+    \captionsetup{font={small}}
+    \caption{Prikaz skice izuma iz patenta US2006140502A1 \cite{Allan2006}}
+    \label{fig:patent1}
+\end{figure}
+
+\flushleft Komponente izuma su:
+\justifying
+\begin{itemize}[noitemsep]
+    \item Aktivna matrica koja će filtrirati svjetlost: ovaj izum koristi poseban ekran koji se nalazi ispred vozača. Ovaj ekran može kontrolirati transparentnost svake pojedine točke na površini, slično kao LCD ekran na računalnom monitoru,
+    \item Sustav za snimanje slika: u vozilu su postavljeni jedan ili više fotoaparata (kamera) koji snimaju vidno polje vozača. Kamere mogu bilježiti sve što vozač vidi tijekom vožnje,
+    \item Detektor položaja zaslona: sustav također uključuje senzore koji prate položaj svjetlosnog filtera (ekrana) ispred vozača. Ovi senzori omogućuju sustavu da zna gdje se ekran nalazi u odnosu na vozačeve oči,
+    \item Mikrokontroler: središnji dio ovog izuma je mikrokontroler, računalna jedinica koja prima informacije iz kamera i senzora. Mikrokontroler obrađuje ove podatke i donosi odluke o tome koje dijelove svjetlosnog filtera treba kontrolirati kako bi smanjio zasljepljujuće svjetlo \cite{Allan2006}.
+\end{itemize}
+
+\flushleft Izum radi na sljedeći princip:
+\justifying
+\begin{itemize}[noitemsep]
+    \item Kamere snimaju ono što se nalazi ispred vozača, uključujući i svjetlosne izvore koji uzrokuju zasljepljivanje,
+    \item Mikrokontroler analizira sliku koju su kamere snimile i identificira položaj tih svjetlosnih izvora,
+    \item Na temelju tog položaja, mikrokontroler aktivira određene dijelove aktivne matrice svjetlosnog filtera. To znači da će ekran postati manje transparentan ili čak potpuno neproziran na mjestima gdje je svjetlosni izvor identificiran,
+    \item Vozač tada vidi okolinu kroz ekran, ali svjetla koja bi ga mogla zaslijepiti bit će zamagljena ili blokirana. To omogućuje vozaču da zadrži jasnu vidljivost, čak i ako su mu uperena jak svjetla \cite{Allan2006}.
+\end{itemize}
+
+Postoji i patent koji prikazuje jednostavniji izum gdje nisu potrebne kamere, nego vozač ručno klikom na LCD matricu odabire mjesto zatamnjivanja kako bi spriječio zasljepljujuću svjetlost \cite{Broude2009}.
+
+\subsubsection{General Motors Patent US11557234B1: "Windshield zone dimming and augmented reality head up display"}
+
+General Motors je među vodećim kompanijama u autoindustriji \cite{GeneralMotors} koja razvija tehnologiju automatskog zatamnjivanja vjetrobranskog stakla, a koja predstavlja značajan napredak u automobilskoj industriji. Ovaj sustav koristi kameru montiranu na retrovizoru kako bi detektirao kut sunca ili druge svjetlosti i liniju pogleda vozača. Zatim prilagođava nijansu vjetrobranskog stakla kako bi blokirao odsjaj i poboljšao vidljivost. \cite{GeneralMotors2022}
+
+Ova tehnologija koristi elektrokromatski materijal unutar vjetrobranskog stakla koji može promijeniti svoju boju i prozirnost kada se na njega primijeni električni napon. Ovo omogućuje sustavu da brzo i precizno prilagodi nijansu vjetrobranskog stakla kako bi blokirao odsjaj sunca. Osim što poboljšava vidljivost, ova tehnologija također može poboljšati udobnost vožnje. Vozači više ne moraju neprestano podešavati sjenilo za sunce ili mijenjati položaj kako bi izbjegli odsjaj sunca. \cite{Bogdan2023}
+
+Ono što čini GM-ovu tehnologiju automatskog zatamnjivanja vjetrobranskog stakla još impresivnijom jest njezina kompatibilnost s proširenom stvarnošću (engl. \emph{augmented reality - AR}) jer će biti moguće upravljanje elektromatskog stakla pomoću napona. Povezivanjem elektrokromnog stakla s AR prikazom na vjetrobranskom staklu, vozačima se nudi poboljšano iskustvo vožnje noću. AR prikaz može pružiti informacije o navigaciji, brzini, upozorenjima i drugim relevantnim podacima izravno na staklu \cite{TudoseSergiu2022}. Ovo znači da vozači ne moraju odvajati pogled s ceste kako bi provjerili svoje instrumente ili navigaciju. Osim što pruža korisne informacije, AR prikaz može dodatno poboljšati sigurnost. Na primjer, sustav može naglasiti prepoznavanje pješaka ili drugih vozila na cesti, pružajući vozačima brže i učinkovitije informacije o potencijalnim opasnostima. \cite{Bogdan2023} \cite{GeneralMotors2022}
+
+Trenutno, General Motors nastavlja razvijati ovu tehnologiju i istražuje mogućnosti za njenu implementaciju u budućim modelima automobila \cite{Bogdan2023}. Cilj je pružiti vozačima sigurniju i ugodniju vožnju, smanjujući utjecaj odsjaja svjetlosti. Kroz inovativnu upotrebu elektrokromatskih materijala i naprednih algoritama za praćenje, ova tehnologija pruža efikasno rješenje za problem odsjaja svjetlosti tijekom vožnje.
+
+Kompanija Apple također pokušava napraviti slično riješenje te je napisala patent \newline US20180304727A1 \cite{OwenMal2018} \cite{Apple2016}. U autoindustriji postoje još i ogledala odnosno retrovizori koji su napravljeni od elektromatskih materijala koji kada su obasjani jakom svjetlošću ne reflektiraju je \cite{Daniel2022}. Još neki od patenata i radova koji su bavili elektromatskim materijalima protiv svjetlosnog zasljepljivanja su: \cite{KumarB2020}, \cite{Dewayne}, \cite{Yuter2010}.
+
+\subsection{Sustavi namjenjeni zaštiti ostalih vozača}
+
+\subsubsection{Samsung PixCell LED svjetlosno rješenje - ADB sustav}
+
+Samsung PixCell LED svjetlosno rješenje je sustav prilagodljivih dugih svjetala ((engl. \emph{Adaptive driving beam systems - ADB systems})) predstavlja naprednu tehnologiju koja se koristi u svjetlosnim sustavima vozila kako bi se poboljšala sigurnost i udobnost vožnje noću. Ta tehnologija koristi mikro LED diode kako bi poboljšala vidljivost i sigurnost na cestama te takav sustav koristi tisuće malih LED dioda (slika \ref{fig:adb}) koje se mogu neovisno kontrolirati kako bi se stvorio precizan snop svjetla što omogućuje automobilima da automatski prilagode intenzitet i smjer svjetlosnih snopova prednjih svjetala kako bi se minimizirao odsjaj i ometanje drugih vozača na cesti, čime se znatno poboljšava sigurnost na cestama. \cite{Samsung2021}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{slike/adb}
+    \captionsetup{font={small}}
+    \caption{Prikaz pločice sa mikroprocesorima i LED diodama - Samsung PixCell \cite{Samsung2021}}
+    \label{fig:adb}
+\end{figure}
+
+Jedna od ključnih značajki PixCell LED sustava i općenito ADB sustava je njegova sposobnost prilagodbe snopa svjetla u stvarnom vremenu (Slika \ref{fig:adb2}). Sustav koristi različite senzore, mikrokontrolere, uključujući kamere i senzore osvjetljenja kako bi neprekidno detektirao okoliš i prilagodio snop svjetla kako bi se izbjegao odsjaj za druge vozače. To može poboljšati sigurnost na cestama smanjujući rizik od privremenog sljepila uzrokovanog odsjajem svjetala. \cite{Samsung2021}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{slike/adb2}
+    \captionsetup{font={small}}
+    \caption{Prikaz upravljenih svjetlosnih snopova dugih svjetala u cilju zaštite ostalih vozača \cite{Sakalas2021}}
+    \label{fig:adb2}
+\end{figure}
+
+Jedna od ključnih prednosti ADB sustava je to što vozači ne moraju ručno prebacivati između dugih i kratkih svjetala kako bi izbjegli ometanje drugih vozača. Sustav to radi automatski i trenutačno, što vozačima omogućuje da ostanu fokusirani na cestu bez potrebe za čestim prilagodbama svjetala. Osim toga, ADB sustav također može pružiti dodatnu udobnost vožnje. Primjerice, može prilagoditi svjetlosne snopove tako da osvijetle cestu oko zavoja prije nego što vozač okrene volan, čime se poboljšava preglednost u krivinama.
+
+Važno je napomenuti da je ADB tehnologija postala sveprisutna u novijim automobilima, posebno u onima visoke klase. To je jedan od primjera kako tehnološki napredak u automobilskoj industriji kontinuirano doprinosi sigurnosti i udobnosti vožnje, posebno u uvjetima smanjene vidljivosti kao što su noćna vožnja ili loše vremenske prilike.
+
+Popularne kompanije u autoindustriji Ford i Audi također razvijaju sličnu ADB tehnologiju \cite{ElectronicSpecifier2016}.
 
 \chapter{Izrada sustava}
 
