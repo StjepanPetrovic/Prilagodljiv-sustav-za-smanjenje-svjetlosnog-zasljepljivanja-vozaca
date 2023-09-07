@@ -542,7 +542,7 @@ Kao argument ova funkcija prima okvir koji treba analizirati. Potrebno je tom ok
 
 Sada se može reći da je zasljepljujuća svjetlost otkrivena, ali se ne zna njezina točna pozicija s koordinatama što će poslužiti kod obavljanja računanja zaštitnog okvira za LCD matricu. Stoga svo ovo provedeno pretvaranje okvira (od originalnog okvira preko pretvaranja u HSV prostor boja do stvaranja crno-bijele maske) je učinjeno zbog toga što će maska okvira biti proslijeđena funkciji $findContours()$ biblioteke OpenCV koja još prima argumente $cv.RETR\_EXTERNAL$ i $cv.CHAIN\_APPROX\_SIMPLE$ koji definiraju kakve će se konture praviti (58. linija koda).
 
-U ovom rješenju kontura predstavlja pravokutnik koji obuhvaća objekt od interesa (bijela boja na slici \ref{fig:maska}) i za taj pravokutnik dobijemo koordinate gornje lijeve točke, visinu i širinu. Funkcija $findContours()$ nije obavezno tražila svo provedeno pretvaranje okvira ali zbog boljeg pronalska kontura preporučeno je da funkcija primi binarni okvir - crno-bijelu masku kako bi rubovi bili što izraženiji \cite{OpenCV4}. Kako bi samo imali konture najizraženijih i najvećih svjetlosti odrađeno je i filtriranje (60. i 61. linija koda).
+U ovom rješenju kontura predstavlja pravokutnik koji obuhvaća objekt od interesa (bijela boja na slici \ref{fig:maska}) i za taj pravokutnik dobijemo koordinate gornje lijeve točke (L točka na grafu slike \ref{fig:sustavCoord}), visinu i širinu. Funkcija $findContours()$ nije obavezno tražila svo provedeno pretvaranje okvira ali zbog boljeg pronalska kontura preporučeno je da funkcija primi binarni okvir - crno-bijelu masku kako bi rubovi bili što izraženiji \cite{OpenCV4}. Kako bi samo imali konture najizraženijih i najvećih svjetlosti odrađeno je i filtriranje (60. i 61. linija koda).
 
 Sada je potrebno proći kroz svaku pronađenu konturu kako bi ju dodali u $light\_position\_queue$ red i kako bi na originalnom okviru iscrtali zeleni pravokutnik oko zasljepljujuće svjetlosti i spremili originalni okvir u $light\_framesq\_queue$ red (63. do 75. linija koda). Potrebno je naglasiti da pralaleno radi i glavna dretva koja odmah uzima okvire stavljene u red i prikaziva ih u prozorima na zaslonu, a o tome će biti više rijeći u poglavlju "Komponenta za polarizaciju LCD matrice kao reaktivne komponente". Iscrtavanje zelenog pravokutnika na originalnom okviru (slika \ref{fig:sustav2}) napravljeno je samo zbog toga kako bi se uvjerili da otkrivena zasljepljujuće svjetlosti radi.
 
@@ -592,7 +592,7 @@ Kaskadna klasifikacija je metoda strojnog učenja koja se koristi za otkrivanje 
 \newpage
 OpenCV biblioteka sadrži implementaciju CascadeClassifier klase koja omogućuje jednostavnu upotrebu ovog algoritma. Klasa sadrži metode za treniranje i primjenu kaskadnog klasifikatora na slikama. Također omogućuje spremanje i učitavanje prethodno istreniranih klasifikatora. CascadeClassifier se često koristi za otkrivanje lica, tijela i drugih objekata u slikama, a u ovom radu će se koristiti za otkrivanje očiju. Ova metoda je vrlo brza i precizna, što ju čini idealnom za upotrebu u realnom vremenu aplikacijama kao što su video nadzor ili interaktivne igre. \cite{OpenCV5}
 
-Prilikom inicijaliziranja objekta klase $CascadeClassifier$ navodi se što je objekt od interesa - ovdje je to oko (36. linija koda). Kada je objekt inicijaliziran možemo njegovoj metodi $detectMultiScale$ proslijediti okvir (prije nego se krene analizirati okvir, preporučeno je zbog boljih rezultata da se okvir prebaci u sivi prostor boja (34. linija koda) \cite{OpenCV5}.) koji se treba analizirati te je još moguće proslijediti argumenata koji bi utjecali na rezultat. Kao rezultat metoda vraća otkrivene objekte različitih veličina u obliku liste pravokutnika koji opisuju točnu poziciju (koordinate gornjeg lijevog kuta pravokutnika na okviru te njegova duljina i širina) očiju na okviru \cite{OpenCV6}. Lista pravokutnika se sprema u $eyes\_position\_queue$ red za daljno računanje (40. linija koda), a još će se i lista pravokutnika iscrtati na originalnim okvirima i spremiti u $eyes\_frames\_queue$ red kako bi prilikom prikazivanja okvira uvidjeli da komponenta pravilno radi (slika \ref{fig:sustav3}).
+Prilikom inicijaliziranja objekta klase $CascadeClassifier$ navodi se što je objekt od interesa - ovdje je to oko (36. linija koda). Kada je objekt inicijaliziran možemo njegovoj metodi $detectMultiScale$ proslijediti okvir (prije nego se krene analizirati okvir, preporučeno je zbog boljih rezultata da se okvir prebaci u sivi prostor boja (34. linija koda) \cite{OpenCV5}.) koji se treba analizirati te je još moguće proslijediti argumenata koji bi utjecali na rezultat. Kao rezultat metoda vraća otkrivene objekte različitih veličina u obliku liste pravokutnika (koordinate gornjeg lijevog kuta pravokutnika (E točka na grafu slike \ref{fig:sustavCoord}) na okviru te njegova duljina i širina) koji opisuju točnu poziciju očiju na okviru \cite{OpenCV6}. Lista pravokutnika se sprema u $eyes\_position\_queue$ red za daljno računanje (40. linija koda), a još će se i lista pravokutnika iscrtati na originalnim okvirima i spremiti u $eyes\_frames\_queue$ red kako bi prilikom prikazivanja okvira uvidjeli da komponenta pravilno radi (slika \ref{fig:sustav3}).
 
 \begin{figure}[h!]
     \centering
@@ -605,7 +605,34 @@ Prilikom inicijaliziranja objekta klase $CascadeClassifier$ navodi se što je ob
 \pagebreak
 \section{Komponenta za polarizaciju LCD matrice kao reaktivne komponente}
 
-Kada su pozicije zasljepljujućeg svjetla (crveni okvir na Slici \ref{fig:sustav6}) i očiju (zeleni okvir na Slici \ref{fig:sustav6}) poznate, potrebno je izračunati na kojem mjestu treba zatamniti LCD matricu, a selektivno zatamnjivanje matrice ustvari znači postavljanje na crnu boju jednog dijela novog zaštitnog okvira (crni okvir na Slici \ref{fig:sustav6}) koji će se prikazivati u prozoru na LCD matrici. Kako bi se bolje shvatila problematika, sljedeća slika \ref{fig:sustav6} prikazuju pojednostavljen prikaz sustava u trodimenzionalnom koordinatnom sustavu sa jednakom udaljenošću od matrice.
+Zadatak ove komponente je da stalno prikazuje zaštitni bijeli okvir sa izračunatom pozicijom crnog pravokutnika (crni okvir na Slici \ref{fig:sustav6}), koji će sprječavati prolazak zasljepljujuće svjetlosti odnosno vršiti propusnu ili nepropusnu polarizaciju, u prozoru na LCD matrici. Taj zadatak je u programskom kodu \ref{lst:lstlisting_11} definiran funkcijom $read\_calculate\_and\_show\_frames()$ koju poziva glavna dretva i koja kao argumente prima nazive prozora u kojima će prikazivati okviri. U funkciji se nalazi $while$ $cv.waitKey(1) != 27$ petlja (83. linija koda) koja se stalno vrti i prekinut će svoj rad kada korisnik pritisne "Esc" tipku na tipkovnici. Kada je "Esc" tipka pritisnuta, dretveni događaj se postavlja na $True$ kako bi druga dretva prestala sa radom i uništavaju se prozori u sustavu (99. i 101. linija koda).
+
+Petlja u svakom krugu dohvača okvire $eye\_frame$ i $light\_frame$ po redoslijedu kojim su došli u red (84. i 85. linija koda) te ih prikaziva u prozorima sustava (95. i 96. linija koda; slika \ref{zastitni_okvir}). Prikazivanje tih okvira nije obavezno, ali se prikazuju kako bi se uvidjelo da sustav ispravno analizira okvire na kojima su otkrivene oči i svjetlost. Ono što je za ovaj sustav ključno prikazati je zaštitni okvir koji će biti prikazan na LCD matrici (97. linija koda).
+
+\begin{lstlisting}[language=Python, label={lst:lstlisting_11}, firstnumber=82, style=colored, caption={Definicija funkcije $read\_calculate\_and\_show\_frames()$}]
+def read_calculate_and_show_frames(eyes_window, light_window, protection_window):
+    while cv.waitKey(1) != 27:
+        eye_frame = eyes_frames_queue.get()
+        light_frame = light_frames_queue.get()
+
+        if eye_frame is None or light_frame is None:
+            break
+
+        protection_frame = create_protection_frame()
+
+        light_frames_queue.task_done()
+        eyes_frames_queue.task_done()
+
+        cv.imshow(eyes_window, eye_frame)
+        cv.imshow(light_window, light_frame)
+        cv.imshow(protection_window, protection_frame)
+
+    stop_read_event.set()
+
+    cv.destroyAllWindows()
+\end{lstlisting}
+
+No, prije prikazivanja zaštitnog okvira potrebno ga je stvoriti (crni okvir na Slici \ref{fig:sustav6}), odnosno obaviti najbitniji zadatak ovog sustava, a to je da se pronađe točno mjesto na kojem će se zatamniti LCD matrica. Stvaranje zaštitnog okvira odrađuje funkcija $create\_protection\_frame()$ (90. linija koda). Kada su pozicije zasljepljujućeg svjetla (crveni okvir na Slici \ref{fig:sustav6}) i očiju (zeleni okvir na Slici \ref{fig:sustav6}) poznate, potrebno je izračunati na kojem mjestu treba zatamniti LCD matricu, a selektivno zatamnjivanje matrice ustvari znači postavljanje na crnu boju jednog dijela novog zaštitnog okvira (crni okvir na Slici \ref{fig:sustav6}) koji će se prikazivati u prozoru na LCD matrici. Kako bi se bolje shvatila problematika, sljedeća slika \ref{fig:sustav6} prikazuju pojednostavljen prikaz sustava u trodimenzionalnom koordinatnom sustavu sa jednakom udaljenošću od matrice.
 
 \begin{figure}[h!]
     \centering
@@ -619,16 +646,41 @@ Zbog jednostavnosti izračuna, zamišljena udaljenost vozača od LCD matrice i u
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{slike/sustav4}
+    \includegraphics[width=0.6\textwidth]{slike/sustav4}
     \captionsetup{font={small}}
     \caption{Pojednostavljen prikaz sustava u dvodimenzionalnom koordinatnom sustavu [autorski rad]}
     \label{fig:sustav4}
 \end{figure}
 
 \newpage
-Nakon razmatranja slike \ref{fig:sustav4} sustava u dvodimenzionalnom polju, dolazi se do zaključka da bi se pozicija pravokutnika crne boje koji će sprječavati svjetlosni snop na zaštitnom okviru mogao nalaziti na polovištu dužine između pozicije očiju i pozicije svjetlosti, što je urađeno programskim kodom \ref{lst:lstlisting_10}.
+Nakon razmatranja slike \ref{fig:sustav4} sustava u dvodimenzionalnom koordinatnom sustavu, dolazi se do zaključka da bi se pozicija pravokutnika crne boje (on obuhvaća plavi krug na slici \ref{fig:sustav4}) koji će sprječavati svjetlosni snop na zaštitnom okviru nalaziti na polovištu dužine između pozicije očiju i pozicije svjetlosti (crveni krugova na slici \ref{fig:sustav4}). U nastavku na slici \ref{fig:sustavCoord} je također prikazan sustav kao na slici \ref{fig:sustav4}, ali su objekti od interesa odnosno oči i svjetlost (crveni krugova na slici \ref{fig:sustav4}) obuhvačeni u pravokutnike zbog toga što će i program dobiti koordinate pravokutnika koji će ih predstavljati i označene su bitne koordinate koje će se koristiti prilikom izračuna polovišta dužine (točka P na slici \ref{fig:sustavCoord}).
 
-\begin{lstlisting}[language=Python, label={lst:lstlisting_10}, firstnumber=33, style=colored, caption={Definicija funkcije $create\_protection\_frame()$}]
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{slike/sustav_coord}
+    \captionsetup{font={small}}
+    \caption{Pojednostavljen prikaz sustava u dvodimenzionalnom koordinatnom sustavu sa bitnim koordinatama [autorski rad]}
+    \label{fig:sustavCoord}
+\end{figure}
+
+    Shodno slici \ref{fig:sustavCoord}, u nastavku su prikazane matematičke jednadžbe pomoću kojih će se izračunati polovište dužine koja spaja točke E i L na slici \ref{fig:sustavCoord}, a one predstavljaju gornje lijeve točke pravokutnika koji će biti spremljeni u redovima  $eye\_positions$ i $light\_positions$ zajedno sa svojom dužinom i širinom. To polovište dužine će predstavljati gornju lijevu točku pravokutnika (P točka na slici \ref{fig:sustavCoord}) koji će biti na zaštitnom okviru (crni okvir na Slici \ref{fig:sustav6}).
+
+\flushleft X koordinata polovišta P računa se na sljedeći način \cite{Edutorij}:
+\justifying
+\begin{equation*}
+Px = \frac{Ex + Lx}{2}
+\end{equation*}
+
+\flushleft Y koordinata polovišta P računa se na sljedeći način \cite{Edutorij}:
+\justifying
+\begin{equation*}
+Py = \frac{Ey + Ly}{2}
+\end{equation*}
+
+\newpage
+Stvaranje zaštitnog okvira i izračun točke P na slici \ref{fig:sustavCoord} u programskom kodu \ref{lst:lstlisting_10} definiran je funkcijom $create\_protection\_frame()$.
+
+\begin{lstlisting}[language=Python, label={lst:lstlisting_10}, firstnumber=104, style=colored, caption={Definicija funkcije $create\_protection\_frame()$}]
 def create_protection_frame():
     frame_width = 640
     frame_height = 480
@@ -661,7 +713,17 @@ def create_protection_frame():
     return protection_frame
 \end{lstlisting}
 
-Prikaz funkcioniranja sustava - link na video: \href{https://foi-my.sharepoint.com/:v:/g/personal/spetrovic20_foi_hr/ERfsxYop3VFCnwyEWHfwgokB6hWikBInY5lpKwYVjjt91A?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0RpcmVjdCJ9fQ&e=REgtGV}{https://foi-my.sharepoint.com}
+Inicijalno zažtitni okvir je cijelom svojom dužinom i širinom bijele boje (108. linija programskog koda) zbog toga što će bijela boja na izvađenoj LCD matrici iz monitora rezultirati svojom prozirnošću dok bude pod utjecajem svjetla. Zatim se dohvačaju sve pozicije očiju i svjetlosti koji su otkriveni i spremljeni u jednom trenutku na okvirima (110. i 111. linija koda) te se za svaku poziciju svjelosti odnosno pravokutnik koji predstavlja svjetlost stvara i crta na bijeli zaštitni okvir njegov duplikat popunjen crnom bojom (113. do 128. linija koda; crna boja će učiniti LCD matricu potpuno neprozirnom dok će sve svjetlije nijanse učinitu ju prozirnijom) istih dimenzija ali se smiješta na poziciju koja odgovara polovištu između pravokutnika koji predstavljaju svjetlost i pravokutnika koji predstavljaju oči (taj duplikat pravokutnika je predstavljen kao pravokutnik crne boje koji se nalazi preko plavog kruga na slici \ref{fig:sustavCoord}).
+
+Funkcija $create\_protection\_frame()$ vraća stvoren zaštitni okvir koji je spreman za prikazivanje na LCD matrici. Na slici \ref{fig:zastitni_okvir} prikazan je u sredini stvoreni zaštitni okvir dok još nije premješten na LCD matricu zajedno za analiziranim okvirima koji prikazuju oči i svjetlost. U nastavku je potrebno prebaciti prozor koji prikaziva zaštitni okvir na LCD matricu koja se ponaša kao prošireni zaslon laptopu. Na sljedećem linku se može pristupiti videu koji prikaziva kako sustav radi dok još prozor koji prikaziva zaštitni okvir nije premješten na LCD matricu: \url{https://foi-my.sharepoint.com/:v:/g/personal/spetrovic20_foi_hr/ERfsxYop3VFCnwyEWHfwgokB6hWikBInY5lpKwYVjjt91A?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0RpcmVjdCJ9fQ&e=REgtGV}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{slike/zastitni_okvir}
+    \captionsetup{font={small}}
+    \caption{Prikaz prozora koji prikazuje zaštitni okvir zajedno sa prozorima koji prikazuju analizirane okvire koji prikazuju oči i svjetlost dok još zaštitni prozor nije premješten na LCD matricu. [autorski rad]}
+    \label{fig:zastitni_okvir}
+\end{figure}
 
 \section{Testiranje sustava}
 
