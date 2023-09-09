@@ -17,11 +17,9 @@
 \smjer{Informacijski i poslovni sustavi} % (ili Poslovni sustavi, Ekonomika poduzetništva, Primjena informacijske tehnologije u poslovanju, Informacijsko i programsko inženjerstvo, Baze podataka i baze znanja, Organizacija poslovnih sustava, Informatika u obrazovanju)
 \titulaProfesora{Doc. dr. sc.}
 
-\sazetak{Tema rada je izrada prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača što predstavlja fizički prototip koji čini LCD matrica, dvije web kamere i laptop kao procesna jedinica. Svjetlosno zasljepljivanje kod vozača uzrokuje pojavu Troxlerovog efekta koji uzrokuje trenutnu sljepoću zbog čega se povečava vozačevo vrijeme za reakciju. U radu su opisani postojeći sustavi protiv zasljepljivanja od kojih su pojedini tek izumi opisani u patentima, a pojedini su realizirani kao prototipi ili proizvodi spremni za tržište. Izazov je bio spojiti četiri komponente (komponentu za pozicioniranje očiju vozača, komponentu za pozicioniranje zasljepljujućeg svjetla, komponentu za zaštitu od zasljepljujućeg svjetla i komponentu procesne jedinice i hardver), od kojih svaka ima svoju važnost i način pristupa, u jedan funkcionalan sustav čiji je prototip realiziran u ovome radu i koji odgovara na pitanje: kako preko kamera prepoznati izvor zasljepljujućeg svjetla i zaštiti oči vozača na način da se preko LCD matrice spriječi prolazak zasljepljujućeg svjetla do očiju vozača. Kako bi se izradio odgovarajući sustav korištena je biblioteka OpenCV (engl. \emph{Open Source Computer Vision Library}) koja je kao projekt pokrenuta od strane Intel korporacije, a pruža softver za strojno učenje i računalni vid u realnom vremenu i korišten je programski jezik Python. Programski kod i \LaTeX \space dokumentacija ovog rada je verzionizirana na GitHub repozitoriju, kojem se može pristupiti preko poveznice: \url{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}.}
+\sazetak{Tema rada je izrada prilagodljivog sustava za smanjenje svjetlosnog zasljepljivanja vozača što predstavlja prototip koji čini LCD matrica, dvije web kamere i laptop kao procesna jedinica. Svjetlosno zasljepljivanje kod vozača uzrokuje pojavu Troxlerovog efekta koji uzrokuje trenutnu sljepoću zbog čega se povečava vozačevo vrijeme za reakciju, a samim time i veće šanse za nastajanje nesreće. U radu su opisani postojeći sustavi protiv zasljepljivanja od kojih su pojedini tek izumi opisani u patentima, a pojedini su realizirani kao prototipi ili proizvodi spremni za tržište. Izazov je bio spojiti komponentu za pozicioniranje očiju vozača, komponentu za pozicioniranje zasljepljujućeg svjetla, komponentu za zaštitu od zasljepljujućeg svjetla i komponentu procesne jedinice i hardver, od kojih svaka ima svoju važnost i način pristupa, u jedan funkcionalan sustav čiji je prototip realiziran u ovome radu i koji odgovara na pitanje: kako preko kamera prepoznati izvor zasljepljujućeg svjetla i zaštiti oči vozača na način da se preko LCD matrice spriječi prolazak zasljepljujućeg svjetla do očiju vozača. Video rada prototipa može se pogledati na poveznici \url{https://bit.ly/prototip-sustav-protiv-zasljepljivanja}. Kako bi se izradio ovakav sustav korištena je biblioteka OpenCV (engl. \emph{Open Source Computer Vision Library}) koja je kao projekt pokrenuta od strane Intel korporacije, a pruža softver za strojno učenje i računalni vid u realnom vremenu te korištena je sa programskim jezikom Python. Programski kod i dokumentacija ovog rada je verzionizirana na GitHub repozitoriju, kojem se može pristupiti preko poveznice: \url{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}.}
 
 \kljucneRijeci{računalni vid; OpenCV; vozilo; zasljepljivanje; Troxlerov efekt; LCD; Python; kamera;}
-
-%\renewcommand*{\lstlistlistingname}{Popis programskih kodova}
 
 \begin{document}
 
@@ -51,7 +49,7 @@ U nastavku rada za izraz „prilagodljiv sustav za smanjenje svjetlosnog zasljep
     \item opisane su metode i tehnike rada koje su se koristile prilikom izrade rada.
 \end{itemize}
 
-\flushleft Nakon čitanja poglavlja "Pregled literature" steći će se bolje razumijevanje sustava koji se opisuje u ovom radu, a u njemu je opisano trenutno stanje tehnologije (engl. \emph{state of the art}) i to:
+\flushleft Poglavlje "Pregled literature" pomoći će bolje razumjeti sustav koji se opisuje u ovom radu, a u njemu je opisano trenutno stanje tehnologije (engl. \emph{state of the art}) i to:
 \justifying
 \begin{itemize}[noitemsep]
     \item opisan je fenomen Troxlerov efekt koji se javlja prilikom svjetlosnog zasljepljivanja,
@@ -60,13 +58,13 @@ U nastavku rada za izraz „prilagodljiv sustav za smanjenje svjetlosnog zasljep
 
 U poglavlju "Izrada sustava" opisan je tijek izrade sustava, koji je popraćen s teorijskim konceptima, kroz opis pojedinih komponenata sustava te je opisan tijek testiranja sustava i opisani su rezultati testiranja.
 
-Na kraju rada je zaključak kojim su protumačeni rezultati izrade i testiranja sustava, navedeni su prijedlozi za buduća usavršavanja sustava i navedeni su zaključni dojmovi autora.
+Na kraju rada je zaključak kojim su navedeni rezultati izrade i testiranja sustava.
 
 \section{Definicija problema}
 
  Potrebno je napraviti sustav koji u realnom vremenu prepoznaje izvor zasljepljujućeg svjetla te reagira na način da polarizira određeni dio reaktivne komponente (LCD matrice) koja bi se nalazila na vjetrobranskom staklu vozila te na taj način smanji jačinu zasljepljujućeg svjetla ispred vozača u vozilu.
 
- Problem se temelji na potrebi za smanjenjem zasljepljujućeg svjetla koje može uzrokovati privremeno zaslijepljenje vozača, kao što su svjetla iz suprotnog smjera tijekom noći ili sunčeva svjetlost tijekom dana. Cilj ove tehnologije je selektivno smanjiti intenzitet zasljepljujućeg svjetla putem transparentne površine odnosno reaktivne komponente koja ima sposobnost kontroliranja transparentnosti na određenim mjestima na površini. Budući da je položaj zasljepljujućeg svjetla u okolini mobilan kao i mjesto zatamnjivanja na transparentnoj površini, koriste se algoritmi za identifikaciju položaja zasljepljujućeg svjetla unutar vidnog polja i kalkulacije za izračun mjesta zatamnjivanja.
+ Problem se temelji na potrebi za smanjenjem zasljepljujućeg svjetla koje može uzrokovati privremeno zaslijepljenje vozača, kao što su svjetla iz suprotnog smjera tijekom noći ili sunčeva svjetlost tijekom dana. Cilj ove tehnologije je selektivno smanjiti intenzitet zasljepljujućeg svjetla putem transparentne površine odnosno reaktivne komponente koja ima sposobnost kontroliranja transparentnosti na određenim mjestima na površini. Budući da je položaj zasljepljujućeg svjetla u okolini mobilan kao i mjesto zatamnjivanja na transparentnoj površini, koriste se algoritmi za identifikaciju položaja zasljepljujućeg svjetla unutar vidnog polja i izračuni za izračun mjesta zatamnjivanja.
 
 Uz dodatna ulaganja i razvoj, ovaj prototip može postati vrlo popularan i koristan proizvod svakom vozaču u vozilu jer će pružiti zaštitu u noćnoj vožnji od zasljepljujuće svjetlosti, koja usmjerena u oči vozača za vrlo kratak trenutak može ugroziti vozača. Najčešće su izvor te svjetlosti duga svjetla na vozilu vozača koji zbog neopreznosti ne isključi duga svjetla u trenutku kada dolazi ususret drugom vozilu čiji će vozač zbog toga biti svjetlosno zasljepljen te na trenutak neće moći vidjeti kuda vozi što može loše utjecati na vozača. Zato je potrebno napraviti sustav koji će:
 \begin{itemize}[noitemsep]
@@ -76,7 +74,7 @@ Uz dodatna ulaganja i razvoj, ovaj prototip može postati vrlo popularan i koris
 
 \section{Cilj}
 
-Cilj ovog rada je napraviti prototip koji će moći raditi u stvarnoj okolini, a ta okolina je pojednostavljeno predstavljena u trodimenzionalnom koordinatnom sustavu kao na slici \ref{fig:prikaz_sustava_1}. Za ulazne uređaje pomoću kojih će vidjeti što se događa u okolini vozača će biti uzete dvije web kamere čiji je sadržaj onoga što vide predstavljen kao narančasti i zeleni okvir na slici \ref{fig:prikaz_sustava_1}, a taj sadržaj će obrađivati istrenirani modeli za računalni vid iz biblioteke OpenCV te će tako procesna jedinica znati gdje se nalaze oči vozača i izvor svjetla koji su predstavljeni kao crveni krugovi odnosno baze valjka na narančastom i zelenom okviru na slici \ref{fig:prikaz_sustava_1}. Kada procesna jedinica to zna, potrebno će biti pomoću algoritma izračunati koji točno dio LCD matrice treba polarizirati/zatamniti, a taj dio koji treba polarizirati je prikazan na slici \ref{fig:prikaz_sustava_1} kao crveni krug na crnom okviru odnosno intersekcija žutog plašta valjka, koji predstavlja svjetlost, sa crnim okvirom koji predstavlja reaktivnu komponentu (LCD matricu). Interaktivnom grafu sa slike \ref{fig:prikaz_sustava_1} može se pristupiti preko linka: \url{https://www.geogebra.org/m/hvzfyjfz}.
+Cilj ovog rada je napraviti prototip koji će moći prikazati koncept i ideju za rad u stvarnoj okolini, a ta okolina je pojednostavljeno predstavljena u trodimenzionalnom koordinatnom sustavu kao na slici \ref{fig:prikaz_sustava_1}. Za ulazne uređaje pomoću kojih će vidjeti što se događa u okolini vozača će biti uzete dvije web kamere čiji je sadržaj onoga što vide predstavljen kao narančasti i zeleni okvir na slici \ref{fig:prikaz_sustava_1}, a taj sadržaj će obrađivati istrenirani modeli za računalni vid iz biblioteke OpenCV te će tako procesna jedinica znati gdje se nalaze oči vozača i izvor svjetla koji su predstavljeni kao crveni krugovi odnosno baze valjka na narančastom i zelenom okviru na slici \ref{fig:prikaz_sustava_1}. Kada procesna jedinica to zna, potrebno će biti pomoću algoritma izračunati koji točno dio LCD matrice treba polarizirati/zatamniti, a taj dio koji treba polarizirati je prikazan na slici \ref{fig:prikaz_sustava_1} kao crveni krug na crnom okviru odnosno intersekcija žutog plašta valjka, koji predstavlja svjetlost, sa crnim okvirom koji predstavlja reaktivnu komponentu (LCD matricu). Interaktivnom grafu sa slike \ref{fig:prikaz_sustava_1} može se pristupiti preko linka: \url{https://www.geogebra.org/m/hvzfyjfz}.
 
 \begin{figure}[h!]
     \centering
@@ -104,11 +102,9 @@ Velik broj nesreća, od 12\% do 15\% nesreća koje se dogode noći na američkim
 
 \section{Metode i tehnike rada}
 
-Tijekom razrade teme korišteni su izvori s interneta kao što su istraživački radovi, članci, blogovi, patenti (\href{https://patents.google.com/}{Google Patents}) te službena dokumentacija programskog jezika Python i biblioteke OpenCV. Programski kod odnosno programsko rješenje je djelo autora rada.
+Tijekom razrade teme korišteni su izvori s interneta kao što su istraživački radovi, članci, blogovi, patenti (\href{https://patents.google.com/}{Google Patents}) te službena dokumentacija programskog jezika Python i biblioteke OpenCV. Programski kod odnosno programsko rješenje je djelo autora rada. Nakon izrade sustava, sustav je testiran i rezultati su navedeni u potpoglavlju "Testiranje sustava".
 
-U alatima GeoGebra i draw.io su izrađeni pojednostavljeni prikazi sustava zbog lakšeg razumijevanja. Podijeljeni su i linkovi na videozapise koji prikazuju kako sustav radi.
-
-Programski kod i \LaTeX \space dokumentacija je verzionizirana na GitHub repozitoriju, kojem se može pristupiti preko poveznice: \url{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}.
+Programski kod kao i dokumentacija koja je pisana u LaTeXu je verzionizirana na GitHub repozitoriju, kojem se može pristupiti preko poveznice: \url{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}. U alatima GeoGebra i draw.io su izrađeni pojednostavljeni prikazi sustava zbog lakšeg razumijevanja. Podijeljeni su i linkovi na videozapise koji prikazuju kako sustav radi.
 
 \chapter{Pregled literature}
 
@@ -219,7 +215,7 @@ Ono što čini GM-ovu tehnologiju automatskog zatamnjivanja vjetrobranskog stakl
 
 Trenutno, General Motors nastavlja razvijati ovu tehnologiju i istražuje mogućnosti za njenu implementaciju u budućim modelima automobila \cite{Bogdan2023}. Cilj je pružiti vozačima sigurniju i ugodniju vožnju, smanjujući utjecaj odsjaja svjetlosti. Kroz inovativnu upotrebu elektrokromatskih materijala i naprednih algoritama za praćenje, ova tehnologija pruža efikasno rješenje za problem odsjaja svjetlosti tijekom vožnje.
 
-Kompanija Apple također pokušava napraviti slično riješenje te je napisala patent \newline US20180304727A1 \cite{OwenMal2018} \cite{Apple2016}. U autoindustriji postoje još i ogledala odnosno retrovizori koji su napravljeni od elektromatskih materijala koji kada su obasjani jakom svjetlošću ne reflektiraju je \cite{Daniel2022}. Još neki od patenata i radova koji su bavili elektromatskim materijalima protiv svjetlosnog zasljepljivanja su: \cite{KumarB2020}, \cite{Dewayne}, \cite{Yuter2010}.
+Kompanija Apple također pokušava napraviti slično riješenje te je napisala patent \newline US20180304727A1 \cite{OwenMal2018} \cite{Apple2016}. U autoindustriji postoje još i ogledala odnosno retrovizori koji su napravljeni od elektromatskih materijala koji kada su obasjani jakom svjetlošću ne reflektiraju je \cite{Autoevolution2022}. Još neki od patenata i radova koji su bavili elektromatskim materijalima protiv svjetlosnog zasljepljivanja su: \cite{KumarB2020}, \cite{Dewayne}, \cite{Yuter2010}.
 
 \subsection{Sustavi namjenjeni zaštiti ostalih vozača - ADB sustav}
 
@@ -276,43 +272,24 @@ U ovom poglavlju će biti opisana izrada i testiranje prilagodljivog sustava za 
 
 Programski kod koji se bude prikazivao u radu može se pronaći na GitHub repozitoriju preko poveznice: \url{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca}. Svi isječci programskog koda su uzeti iz jedne datoteke \href{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca/blob/main/development/main.py}{$main.py$} te će se u isječcima programskog koda moći vidjeti i redni brojevi linija koda koji se odnose na redne brojeve linija koda iz datoteke \href{https://github.com/StjepanPetrovic/Prilagodljiv-sustav-za-smanjenje-svjetlosnog-zasljepljivanja-vozaca/blob/main/development/main.py}{$main.py$}.
 
-Ovim radom izrađen je prototip koji će objasniti i prikazati ideju za izradu ovakvog sustava, ali ovaj prototip nije spreman za upotrebu u stvarnoj okolini. Ono što nije ovim radom obrađeno je navedeno u nastavku, to su neke od glavnih značajki koje bi sustav trebao ispunjavati kako bi pronašao svrhu u stvarnoj okolini:
-\begin{itemize}[noitemsep]
-    \item korištenje mikroprocesora koji će biti zadužen samo za obavljanje funkcionalnosti sustava,
-    \item korištenje posebno izrađene prozirne LCD matrice ili korištenje drugog medija kao reaktivne komponente koja bi poslužila svrsi,
-    \item korištenje posebnog modela i senzora za otkrivanje jačine svjetlosti,
-    \item korištenje posebno istreniranog modela ili senzora koji će moći izračunati udaljenost zasljepljujućeg svjetla i očiju od reaktivne komponente,
-    \item korištenje algoritma koji će uzeti u obzir sve udaljenosti, nagib vjetrobranskog stakla i klasifikacije objekata od interesa kako bi što kvalitetnije izračunavao mjesto na kojemu treba zaustaviti svjetlost preko reaktivne komponente,
-    \item spremnost na rad u noćnim uvjetima,
-    \item velika količina testiranja sustava u raznovrsnoj i dinamičnoj okolini (posebno noćnoj okolini).
-\end{itemize}
-
+\newpage
 \section{Komponenta procesne jedinice i hardver}
 
 Ovo poglavlje opisuje komponentu procesne jedinice kao komponentu koja čini temelj i softverski povezuje ostale komponente, a također opisuje i kako je sustav hardverski povezan.
 
 \subsection{Hardver}
-U ovom radu komponentu procesne jedinice predstavlja laptop (broj 1 na Slici \ref{fig:arhit_hard_soft}) na kojem će se izvršavati programski kod i čiji će procesor obrađivati ulazne informacije koje šalju kamere (broj 2 i 3 na Slici \ref{fig:arhit_hard_soft}), a kamere su obične web kamere od kojih je jedna ugrađena u laptop, a druga je eksterna i priključena je preko USB priključka u laptop. Jedna kamera je namjenjena za snimanje okoline ispred vozača, a druga kamera je namijenjena za snimanje samog vozača.
+U ovom radu komponentu procesne jedinice predstavlja laptop (broj 3 na slici \ref{fig:prototip_dijelovi}; broj 1 na slici \ref{fig:arhit_hard_soft}) na kojem će se izvršavati programski kod i čiji će procesor obrađivati ulazne informacije koje šalju kamere (broj 2 i 3 na slici \ref{fig:prototip_dijelovi}; broj 2 i 3 na slici \ref{fig:arhit_hard_soft}), a kamere su web kamere od kojih je jedna ugrađena u laptop, a druga je eksterna i priključena je preko USB priključka u laptop. Jedna kamera je namijenjena za snimanje okoline ispred vozača, a druga kamera je namijenjena za snimanje samog vozača.
 
-Ispred vozača bi se nalazila LCD matrica (broj 4 na Slici \ref{fig:arhit_hard_soft}) koja će smanjiti i sprječiti zasljepljujuću svjetlost da dođe do očiju vozača. LCD matrica, zajedno sa elektronikom, za ovaj rad je izvađena iz običnog monitora te povezana preko HDMI priključka u laptop i ponaša se kao drugi prošireni zaslon laptopa. Na slici \ref{fig:lcd_matrica_1} i \ref{fig:lcd_matrica_2} može se vidjeti kako izgleda LCD matrica zajedno sa elektronikom i priključcima kada je izvađena iz monitora i postavljena u postolje kako bi uspravno stojala prilikom testiranja prototipa.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.4\textwidth]{slike/lcd_matrica_1}
-    \captionsetup{font={small}}
-    \caption{Prikaz LCD matrica s prednje strane kada je izvađena iz monitora [autorski rad]}
-    \label{fig:lcd_matrica_1}
-\end{figure}
+Ispred vozača se nalazi LCD matrica (broj 4 na slici \ref{fig:prototip_dijelovi}; broj 4 na Slici \ref{fig:arhit_hard_soft}) koja će smanjiti i sprječiti zasljepljujuću svjetlost da dođe do očiju vozača. LCD matrica, zajedno sa elektronikom, za ovaj rad je izvađena iz Samsung SyncMaster 205BW monitora te povezana preko HDMI priključka u laptop i ponaša se kao drugi prošireni zaslon laptopa. Na slici \ref{fig:prototip_dijelovi} može se vidjeti kako izgleda prototip spreman za testiranje i njegovi bitni dijelovi.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.4\textwidth]{slike/lcd_matrica_2}
+    \includegraphics[width=0.7\textwidth]{slike/prototip_dijelovi}
     \captionsetup{font={small}}
-    \caption{Prikaz LCD matrica sa zadnje strane kada je izvađena iz monitora [autorski rad]}
-    \label{fig:lcd_matrica_2}
+    \caption{Prikaz dijelova prototipa u stanju spremnom za testiranje [autorski rad]}
+    \label{fig:prototip_dijelovi}
 \end{figure}
 
-\newpage
 \subsection{OpenCV-Python biblioteka}
 
 Budući da je potrebno prepoznati i pronaći točne pozicije na kojima se nalaze objekti od interesa odnosno svjetlost i oči, potrebno je koristiti algoritme za računalni vid. Kako IBM navodi (engl. \emph{International Business Machines Corporation - IBM}), računalni vid je grana umjetne inteligencija (engl. \emph{Artificial intelligence - AI}) koja omogućava računalima da pruže smislene informacije koje pronađu obradom slika, videa ili drugog vizualnog izvora te da reagiraju shodno toj informaciji \cite{cv-ibm}. Stoga kako bi mogli pronaći pozicije svjetlosti i očiju na okvirima koji se budu dobivali od kamera, u ovom radu koristit će se biblioteka OpenCV za programski jezik Python.
@@ -322,7 +299,6 @@ OpenCV je biblioteka otvorenog koda (engl. \emph{open source}) koja služi za rj
 Treba se uzeti u obzir da je Python sporiji programski jezik u odnosu na C++ koji je se također mogao koristiti u ovom radu, no moguće je imati i Python module koji će sadržavati C++ programski kod za procesorski intenzivne zadatke, a rezultat toga je da se izvršavanja Python programskog koda izvršava približno jednakom brzinom kao i brzina izvršavanja C++ programskog koda jer se C++ kod izvršava u pozadini te lakše je programirati u Python programskom jeziku nego u C++ programskom jeziku \cite{opencv-python}.
 
 Kako bi se koristila biblioteka OpenCV sa programskim jezikom Python potrebno ju je prvo instalirati. U terminalu unesite komandu: $pip$ $install$ $opencv$-$python$ i OpenCV biblioteka će biti instalirana. Ako ju želite korisiti u $conda$ radnom okruženju koje nudi dodatne pogodnosti slijediti upute za odgovarajući operativni sustav (engl. \emph{Operating System - OS}) za:
-\newpage
 \begin{itemize}[noitemsep]
     \item Linux OS: \url{https://youtu.be/gt0Mpi6FFzQ?si=QCLjiDrJcBCP5qV8},
     \item Windows OS: \url{https://youtu.be/RfFiTozvOdQ?si=6jtyHU4YK9jsi6kv},
@@ -372,11 +348,11 @@ eyes_position_queue = Queue()
 light_position_queue = Queue()
 \end{lstlisting}
 
+\newpage
 Programskim kodom \ref{lst:lstlisting_2} inicijalizirani su  $eyes\_frames\_queue$ i $light\_frames\_queue$ redovi koji služe za spremanje okvira koji se dobiju pomoću kamera i prikazivanje istih okvira nakon njihova analiziranja te još su inicijalizirani $eyes\_position\_queue$ i $light\_position\_queue$ redovi koji služe za spremanje koordinata za pozicije očiju i izvora svjetla koji se dobiju nakon analiziranja okvira i služe za kasnije računanje prilikom stvaranje sloja zaštite koji će se prikazivati na LCD matrici.
 
 Okviri se prikazuju u posebno otvorenim prozorima na zaslonu laptopa i LCD matrice koje otvaramo sa programskim kodom \ref{lst:lstlisting_3}. Prvi prozor prikaziva okvire od kamere koja snima oči vozača, drugi prozor prikaziva okvire od kamere koja snima vanjsku okolinu koja dolazi ususret vozaču, a treći prozor je prozor koji će biti postavljen na LCD matricu i prikazivat će zaštitni okvir koji je ustvari okvir popunjen bijelom bojom, a crnom bojom na mjestima koja su izračunata kako bi se zatamnio određen dio matrice i spriječilo prodiranje svjetlosti. Kontinuirano prikazivanje okvira rezultira time da se može u realnom vremenu pratiti ono što kamere gledaju u obliku videa uživo (engl. \emph{live stream}).
 
-\newpage
 \begin{lstlisting}[language=Python, label={lst:lstlisting_3}, firstnumber=142, style=colored, caption=Otvaranje prozora na zaslonu]
 def open_window(name):
     cv.namedWindow(name, cv.WINDOW_NORMAL)
@@ -548,7 +524,7 @@ Sada je potrebno proći kroz svaku pronađenu konturu kako bi ju dodali u $light
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.4\textwidth]{slike/sustav2}
+    \includegraphics[width=0.5\textwidth]{slike/sustav2}
     \captionsetup{font={small}}
     \caption{Prikaz otkrivene svjetlosti [autorski rad]}
     \label{fig:sustav2}
@@ -605,9 +581,9 @@ Prilikom inicijaliziranja objekta klase $CascadeClassifier$ navodi se što je ob
 \pagebreak
 \section{Komponenta za polarizaciju LCD matrice kao reaktivne komponente}
 
-Zadatak ove komponente je da stalno prikazuje zaštitni bijeli okvir sa izračunatom pozicijom crnog pravokutnika (crni okvir na Slici \ref{fig:sustav6}), koji će sprječavati prolazak zasljepljujuće svjetlosti odnosno vršiti propusnu ili nepropusnu polarizaciju, u prozoru na LCD matrici. Taj zadatak je u programskom kodu \ref{lst:lstlisting_11} definiran funkcijom $read\_calculate\_and\_show\_frames()$ koju poziva glavna dretva i koja kao argumente prima nazive prozora u kojima će prikazivati okviri. U funkciji se nalazi $while$ $cv.waitKey(1) != 27$ petlja (83. linija koda) koja se stalno vrti i prekinut će svoj rad kada korisnik pritisne "Esc" tipku na tipkovnici. Kada je "Esc" tipka pritisnuta, dretveni događaj se postavlja na $True$ kako bi druga dretva prestala sa radom i uništavaju se prozori u sustavu (99. i 101. linija koda).
+Zadatak ove komponente je da stalno prikazuje zaštitni bijeli okvir sa izračunatom pozicijom crnog pravokutnika (crni okvir na Slici \ref{fig:sustav6}), koji će sprječavati prolazak zasljepljujuće svjetlosti odnosno vršiti propusnu ili nepropusnu polarizaciju, u prozoru na LCD matrici. Taj zadatak je u programskom kodu \ref{lst:lstlisting_11} definiran funkcijom $read\_calculate\_and\_show\_frames()$ koju poziva glavna dretva i koja kao argumente prima nazive prozora u kojima će se prikazivati okviri. U funkciji se nalazi "$while$ $cv.waitKey(1) != 27$" petlja (83. linija koda) koja se stalno vrti i prekinut će svoj rad kada korisnik pritisne "Esc" tipku na tipkovnici. Kada je "Esc" tipka pritisnuta, dretveni događaj se postavlja na $True$ kako bi druga dretva prestala sa radom i uništavaju se prozori u sustavu (99. i 101. linija koda).
 
-Petlja u svakom krugu dohvača okvire $eye\_frame$ i $light\_frame$ po redoslijedu kojim su došli u red (84. i 85. linija koda) te ih prikaziva u prozorima sustava (95. i 96. linija koda; slika \ref{zastitni_okvir}). Prikazivanje tih okvira nije obavezno, ali se prikazuju kako bi se uvidjelo da sustav ispravno analizira okvire na kojima su otkrivene oči i svjetlost. Ono što je za ovaj sustav ključno prikazati je zaštitni okvir koji će biti prikazan na LCD matrici (97. linija koda).
+Petlja u svakom krugu dohvača okvire iz redova $eyes\_frames\_queue$ i $light\_frames\_queue$ po redoslijedu kojim su došli u red (84. i 85. linija koda) te ih prikaziva u prozorima sustava (95. i 96. linija koda; slika \ref{fig:zastitni_okvir}). Prikazivanje tih okvira nije obavezno, ali se prikazuju kako bi se uvidjelo da sustav ispravno analizira okvire na kojima su otkrivene oči i svjetlost. Ono što je za ovaj sustav ključno prikazati je zaštitni okvir koji će biti prikazan na LCD matrici (97. linija koda).
 
 \begin{lstlisting}[language=Python, label={lst:lstlisting_11}, firstnumber=82, style=colored, caption={Definicija funkcije $read\_calculate\_and\_show\_frames()$}]
 def read_calculate_and_show_frames(eyes_window, light_window, protection_window):
@@ -642,7 +618,7 @@ No, prije prikazivanja zaštitnog okvira potrebno ga je stvoriti (crni okvir na 
     \label{fig:sustav6}
 \end{figure}
 
-Zbog jednostavnosti izračuna, zamišljena udaljenost vozača od LCD matrice i udaljenost zasljepljujućeg svjetla od LCD matrice uzeta je kao jednaka. Shodno tome, sljedeća slika \ref{fig:sustav4} prikaziva kako ovaj graf izgleda iz druge perspektive, odnosno u dvodimenzionalnom koordinatnom sustavu.
+Zbog jednostavnosti izračuna, zamišljena udaljenost vozača od LCD matrice i udaljenost zasljepljujućeg svjetla od LCD matrice uzeta je kao jednaka. Shodno tome, sljedeća slika \ref{fig:sustav4} prikaziva kako ovaj graf na slici \ref{fig:sustav6} izgleda iz druge perspektive, odnosno u dvodimenzionalnom koordinatnom sustavu.
 
 \begin{figure}[h!]
     \centering
@@ -653,7 +629,7 @@ Zbog jednostavnosti izračuna, zamišljena udaljenost vozača od LCD matrice i u
 \end{figure}
 
 \newpage
-Nakon razmatranja slike \ref{fig:sustav4} sustava u dvodimenzionalnom koordinatnom sustavu, dolazi se do zaključka da bi se pozicija pravokutnika crne boje (on obuhvaća plavi krug na slici \ref{fig:sustav4}) koji će sprječavati svjetlosni snop na zaštitnom okviru nalaziti na polovištu dužine između pozicije očiju i pozicije svjetlosti (crveni krugova na slici \ref{fig:sustav4}). U nastavku na slici \ref{fig:sustavCoord} je također prikazan sustav kao na slici \ref{fig:sustav4}, ali su objekti od interesa odnosno oči i svjetlost (crveni krugova na slici \ref{fig:sustav4}) obuhvačeni u pravokutnike zbog toga što će i program dobiti koordinate pravokutnika koji će ih predstavljati i označene su bitne koordinate koje će se koristiti prilikom izračuna polovišta dužine (točka P na slici \ref{fig:sustavCoord}).
+Nakon razmatranja slike \ref{fig:sustav4} sustava u dvodimenzionalnom koordinatnom sustavu, dolazi se do zaključka da bi se pozicija pravokutnika crne boje (on obuhvaća plavi krug na slici \ref{fig:sustav4}) koji će sprječavati svjetlosni snop na zaštitnom okviru nalaziti na polovištu dužine između pozicije očiju i pozicije svjetlosti (crveni krugova na slici \ref{fig:sustav4}). U nastavku na slici \ref{fig:sustavCoord} je također prikazan sustav kao na slici \ref{fig:sustav4}, ali su objekti od interesa odnosno oči i svjetlost (crveni krugova na slici \ref{fig:sustav4}) obuhvačeni u pravokutnike zbog toga što će i program od OpenCV biblioteke dobiti koordinate pravokutnika koji će ih predstavljati i označene su bitne koordinate koje će se koristiti prilikom izračuna polovišta dužine (točka P na slici \ref{fig:sustavCoord}).
 
 \begin{figure}[h!]
     \centering
@@ -713,24 +689,107 @@ def create_protection_frame():
     return protection_frame
 \end{lstlisting}
 
-Inicijalno zažtitni okvir je cijelom svojom dužinom i širinom bijele boje (108. linija programskog koda) zbog toga što će bijela boja na izvađenoj LCD matrici iz monitora rezultirati svojom prozirnošću dok bude pod utjecajem svjetla. Zatim se dohvačaju sve pozicije očiju i svjetlosti koji su otkriveni i spremljeni u jednom trenutku na okvirima (110. i 111. linija koda) te se za svaku poziciju svjelosti odnosno pravokutnik koji predstavlja svjetlost stvara i crta na bijeli zaštitni okvir njegov duplikat popunjen crnom bojom (113. do 128. linija koda; crna boja će učiniti LCD matricu potpuno neprozirnom dok će sve svjetlije nijanse učinitu ju prozirnijom) istih dimenzija ali se smiješta na poziciju koja odgovara polovištu između pravokutnika koji predstavljaju svjetlost i pravokutnika koji predstavljaju oči (taj duplikat pravokutnika je predstavljen kao pravokutnik crne boje koji se nalazi preko plavog kruga na slici \ref{fig:sustavCoord}).
+Inicijalno zažtitni okvir je cijelom svojom dužinom i širinom bijele boje (108. linija programskog koda) zbog toga što će bijela boja na izvađenoj LCD matrici iz monitora rezultirati svojom prozirnošću dok bude pod utjecajem svjetla. Zatim se dohvačaju sve pozicije očiju i svjetlosti koje su otkrivene i spremljene u jednom trenutku na okvirima (110. i 111. linija koda) te se za svaku poziciju svjelosti odnosno pravokutnik koji predstavlja svjetlost stvara i crta na bijeli zaštitni okvir njegov duplikat istih dimenzija popunjen crnom bojom (113. do 128. linija koda; crna boja će učiniti LCD matricu potpuno neprozirnom dok će sve svjetlije nijanse učinitu ju prozirnijom) ali se smiješta na poziciju koja odgovara polovištu između pravokutnika koji predstavljaju svjetlost i pravokutnika koji predstavljaju oči (taj duplikat pravokutnika je predstavljen kao pravokutnik crne boje koji se nalazi preko plavog kruga na slici \ref{fig:sustavCoord}).
 
-Funkcija $create\_protection\_frame()$ vraća stvoren zaštitni okvir koji je spreman za prikazivanje na LCD matrici. Na slici \ref{fig:zastitni_okvir} prikazan je u sredini stvoreni zaštitni okvir dok još nije premješten na LCD matricu zajedno za analiziranim okvirima koji prikazuju oči i svjetlost. U nastavku je potrebno prebaciti prozor koji prikaziva zaštitni okvir na LCD matricu koja se ponaša kao prošireni zaslon laptopu. Na sljedećem linku se može pristupiti videu koji prikaziva kako sustav radi dok još prozor koji prikaziva zaštitni okvir nije premješten na LCD matricu: \url{https://foi-my.sharepoint.com/:v:/g/personal/spetrovic20_foi_hr/ERfsxYop3VFCnwyEWHfwgokB6hWikBInY5lpKwYVjjt91A?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0RpcmVjdCJ9fQ&e=REgtGV}
+Funkcija $create\_protection\_frame()$ vraća stvoren zaštitni okvir koji je spreman za prikazivanje na LCD matrici. Na slici \ref{fig:zastitni_okvir} prikazan je u sredini stvoreni zaštitni okvir dok još nije premješten na LCD matricu zajedno sa analiziranim okvirima koji prikazuju oči i svjetlost. U nastavku je potrebno prebaciti prozor koji prikaziva zaštitni okvir na LCD matricu koja se ponaša kao prošireni zaslon laptopu. Na sljedećem linku se može pristupiti videu koji prikaziva kako sustav radi dok još prozor koji prikaziva zaštitni okvir nije premješten na LCD matricu odnosno dok još sustav nije spreman za testiranje sa LCD matricom: \url{https://bit.ly/prototip-laptop-zavrsni-rad}
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\textwidth]{slike/zastitni_okvir}
+    \includegraphics[width=1\textwidth]{slike/zastitni_okvir}
     \captionsetup{font={small}}
     \caption{Prikaz prozora koji prikazuje zaštitni okvir zajedno sa prozorima koji prikazuju analizirane okvire koji prikazuju oči i svjetlost dok još zaštitni prozor nije premješten na LCD matricu. [autorski rad]}
     \label{fig:zastitni_okvir}
 \end{figure}
 
+\newpage
 \section{Testiranje sustava}
+
+Za testiranje sustava potrebno je namjestiti LCD matrica sa njezinom elektronikom između očiju i izvora svjetla te postaviti jednu kameru ispred matrica kako bi snimala izvor svjetla i drugu kameru odnosno laptop sa ugrađenom kamerom postaviti iza matrice kako bi snimala oči, a laptop je potrebno spojiti s matricom i pokrenuti Python program na laptopu. Na slici \ref{fig:prototip_dijelovi} može se vidjeti kako izgleda postavljen prototip za testiranje.
+
+Kada je Python program pokrenut, otvaraju se tri prozora od kojih će oni za pračenje očiju i svjetlosti ostati na zaslonu laptopa dok će treći zaštitni biti premješten na LCD matricu kako bi štitio oči od svjetlosti što se može vidjeti na slici \ref{fig:prototip_prozori} gdje je prozor koji prikaziva zaštitni okvir naznačen crvenom bojom.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.65\textwidth]{slike/prototip_prozori}
+    \captionsetup{font={small}}
+    \caption{Prikaz premještenog prozora koji prikaziva zaštitni okvir na LCD matricu [autorski rad]}
+    \label{fig:prototip_prozori}
+\end{figure}
+
+\newpage
+Na slici \ref{fig:prototip_prozori} i \ref{fig:prototip_matrica} može se primjetiti da LCD matrica nije dovoljno prozirna, tamnija je i zamagljeno je kada se gleda kroz nju, razlog su tamni slojevi polarizacijskih filmova koji se nalaze na njoj. Prototip je postavljen da radi na vanjskom sunčevom svjetlu jer je LCD matrici bila potrebna velika količina svjetla kako bi se moglo vidjeti kroz nju bez pozadinskog osvjetljenja, kojeg inače ima u kučištu monitora. Slika \ref{fig:prototip_matrica} prikaziva pogled kroz matricu dok je na njoj okvir ispunjen bijelom bojom. Prikazivanje bijele boje LCD matricu čini najviše prozirnom.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{slike/prototip_matrica}
+    \captionsetup{font={small}}
+    \caption{Prikaz pogleda kroz matricu dok prikaziva bijelu boju [autorski rad]}
+    \label{fig:prototip_matrica}
+\end{figure}
+
+LCD matrica se sastoji od više slojeva, a polarizacijski slojevi odnosno filmovi su temeljni dijelovi matrice koji omogućuju prikazivanje slike na LCD matrici \cite{SamsungSDI}. Matrica je većinom tamnija i zamagljena, a samim time i neprozirnija zbog polarizacijskih filmova koji se nalaze sa obje strane LCD matrice (slika \ref{fig:slojevi_matrica}) i koji su tamne boje. Ako bi se na tržištu pronašli prozirni polarizacijski filmovi ili ako bi se pronašla posebno specijalizirana prozirna matrica ili koristila drugačija reaktivna komponenta LCD matrica bi izgledala dosta prozirnije. No, matrica koja se koristi za ovaj rad je dovoljna kako bi se pokazala ideja prototipa.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{slike/prototip_slojevi_matrice}
+    \captionsetup{font={small}}
+    \caption{Prikaz slojeva LCD matrice \cite{SamsungSDI}}
+    \label{fig:slojevi_matrica}
+\end{figure}
+
+Kako je se pozicija očiju i svjetlosti mijenjala Tijekom rada, prototip je uspješno ocrtavao crni pravokutnik na LCD matrici kako bi spriječio svjetlost što je prikazano na slici \ref{fig:prototip_zastita} i na videu koji se može pronaći na poveznici \url{https://bit.ly/prototip-sustav-protiv-zasljepljivanja}. Video prikaziva dva pogleda: jedan pogled snima reagiranje sustava na LCD matricu te istovremeno se prikaziva i drugi pogled koji prikaziva prozore u kojima su prikazani analizirani okviri očiju i svjetla, i zaštitni okvir koji je na LCD matrici. Nedostatci prototipa su:
+\begin{itemize}[noitemsep]
+    \item model za prepoznavanje očiju u nekim trenutcima pojedine objekte na slici prepoznaje kao oči iako to oni nisu,
+    \item model za prepoznavanje svjetlosti površinski odsjaj prepoznaje kao izvor svjetlosti,
+    \item kamere u pojedinim trenutcima ne mogu snimiti objekte od interesa na najbolji način kako bi ih modeli prepoznali,
+    \item LCD matrica nije dovoljno prozirna.
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\textwidth]{slike/prototip_zastita}
+    \captionsetup{font={small}}
+    \caption{Prikaz iscrtanog crnog pravokutnika na LCD matrici koji spriječava svjetlost [autorski rad]}
+    \label{fig:prototip_zastita}
+\end{figure}
+
+\newpage
+Prototip je također postavljen i testiran u noćnim uvjetima, no zbog manjka svjetlosti LCD matrica je još više neprozirnija, ali se na slici \ref{fig:prototip_mrak} može vidjeti i to da je crni pravokutnik na zaštitnom okviru uspješno isrctan kako bi spriječio svjetlost.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{slike/prototip_mrak}
+    \captionsetup{font={small}}
+    \caption{Prikaz iscrtanog crnog pravokutnika na LCD matrici koji spriječava svjetlost u noćnim uvjetima [autorski rad]}
+    \label{fig:prototip_mrak}
+\end{figure}
+
+Procesna jedinica odnosno CPU je praćen tijekom rada programa, a na slici \ref{fig:prototip_cpu} se može vidjeti da je opterećenje na CPU-u tijekom rada programa na oko 55\% do 60\% od maksimalnog opterećenja.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{slike/prototip_cpu}
+    \captionsetup{font={small}}
+    \caption{Grafički prikaz opterećenja na CPU kada je program pokrenut [autorski rad]}
+    \label{fig:prototip_cpu}
+\end{figure}
 
 \pagebreak
 \chapter{Zaključak}
 
-Ovdje treba sažeto rezimirati najvažnije rezultate razrade teme rada. Potrebno je sažeto opisati što je predmet rada, koje su metode, tehnike, programski alati ili aplikacije korištene u razradi rada te koje su pretpostavke dokazane, a koje opovrgnute. Sadržajno, ono što se u uvodu rada najavljuje i kasnije je obuhvaćeno u samom radu, moralo bi biti opisano u zaključnom dijelu kroz rezultate rada.
+Napravljen je sustav koji u realnom vremenu prepoznaje izvor zasljepljujućeg svjetla te reagira na način da polarizira određeni dio reaktivne komponente (LCD matrice) koja bi se nalazila na vjetrobranskom staklu vozila te na taj način smanjiva jačinu zasljepljujućeg svjetla ispred vozača u vozilu.
+
+Ovaj rad je objasnio i prikazao ideju za izradu sustava za smanjenje svjetlosnog zasljepljivanja vozača, ali ovaj prototip nije spreman za upotrebu u stvarnoj okolini. Ovaj prototip može na robustan način prepoznati oči i zasljepljujuću svjetlost te pomoću tih podataka spriječiti prolazak svjetla, ali ono što nije ovim radom obrađeno je navedeno u nastavku, to su neke od glavnih ozbiljnijih značajki koje pojedini postojeći sustavi opisani u ovom radu (poglavlje "Pregled literature") ispunjavaju u odnosu na prototip koji je izrađen ovim radom, a koje bi prototip trebao ispunjavati kako bi pronašao svrhu u stvarnoj okolini:
+\begin{itemize}[noitemsep]
+    \item korištenje posebno izrađene prozirne LCD matrice ili korištenje drugog medija kao reaktivne komponente kako bi prozirnost bila što veća,
+    \item korištenje istreniranih modela koji će precizno prepoznavati oči i svjetlost,
+    \item korištenje algoritma koji će uzeti u obzir sve udaljenosti, nagib vjetrobranskog stakla i klasifikacije objekata od interesa kako bi što kvalitetnije izračunavao mjesto na kojemu treba zaustaviti svjetlost preko reaktivne komponente,
+    \item spremnost na rad u noćnim uvjetima,
+    \item korištenje mikroprocesora koji će biti zadužen samo za obavljanje funkcionalnosti sustava,
+    \item velika količina testiranja sustava u raznovrsnoj i dinamičnoj okolini (posebno noćnoj okolini).
+\end{itemize}
+
+Obrađeni su postojeći sustavi za smanjenje svjetlosnog zasljepljivanja vozača te su opisani teorijski koncepti koji prate izradu prototipa. Za izradu programskog koda prototipa korištena je biblioteka OpenCV za Python programski jezik. Nakon izrade, prototip je testiran te je zaključeno da je reaktivna komponenta odnosno LCD matrica dio koji stvara najviše pažnje jer je potrebno da reaktivna komponenta bude što specijaliziranija ovom sustavu kako bi bila prozirna odnosno ne bi ometala vidno polje vozača.
 
 \printbibliography[title=Popis literature]
 \addcontentsline{toc}{chapter}{Popis literature}
