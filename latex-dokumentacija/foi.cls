@@ -81,7 +81,7 @@ unicode
 \lstset{style=colored}
 
 \renewcommand{\lstlistingname}{Programski kod}
-\renewcommand{\lstlistlistingname}{Lista programskih kodova}
+\renewcommand{\lstlistlistingname}{Popis programskih kodova}
 
 % Promjena iz Times u Sans font
 \renewcommand{\rmdefault}{\sfdefault}
@@ -129,6 +129,7 @@ unicode
 \let \savenumberline \numberline
 \def \numberline#1{\savenumberline{#1.}}
 
+\let\oldtableofcontents=\tableofcontents
 % Redefinicija sadržaja
 \renewcommand\tableofcontents{%
 %\setcounter{page}{2}
